@@ -5,7 +5,7 @@
 	Description: Displays a fully customizable Ajax-powered chat box anywhere on your site.
 	Author: Jeff Starr
 	Author URI: http://monzilla.biz/
-	Version: 20121110
+	Version: 20121119
 	License: GPL v2
 	Usage: Visit the plugin's settings page for shortcodes, template tags, and more information.
 	Tags: chat, box, ajax, forum
@@ -21,7 +21,7 @@
 $sac_plugin  = 'Simple Ajax Chat';
 $sac_path    = 'simple-ajax-chat/simple-ajax-chat.php';
 $sac_homeurl = 'http://perishablepress.com/simple-ajax-chat/';
-$sac_version = '20121110';
+$sac_version = '20121119';
 
 $sac_admin_user_level   = 8;
 $sac_number_of_comments = 999;
@@ -277,16 +277,17 @@ function sac_addData($sac_user_name, $sac_user_text, $sac_user_url) {
 
 	$censors = explode(",", strval($list));
 	$censors = array_map('trim', $censors);
-
-	foreach ($censors as $censor) {
-		if (!stristr($sac_user_text, $censor) === FALSE) {
-			$sac_user_text = str_replace($censor, '', $sac_user_text);
-		}
-		if (!stristr($sac_user_name, $censor) === FALSE) {
-			$sac_user_name = str_replace($censor, '', $sac_user_name);
-		}
-		if (!stristr($sac_user_url, $censor) === FALSE) {
-			$sac_user_url = str_replace($censor, '', $sac_user_url);
+	if (!empty($censors)) {
+		foreach ($censors as $censor) {
+			if (!stristr($sac_user_text, $censor) === FALSE) {
+				$sac_user_text = str_replace($censor, '', $sac_user_text);
+			}
+			if (!stristr($sac_user_name, $censor) === FALSE) {
+				$sac_user_name = str_replace($censor, '', $sac_user_name);
+			}
+			if (!stristr($sac_user_url, $censor) === FALSE) {
+				$sac_user_url = str_replace($censor, '', $sac_user_url);
+			}
 		}
 	}
 	mysql_query("INSERT INTO " . $table_prefix . "ajax_chat (time, name, text, url) VALUES ('" . time() . "','" . 
@@ -398,14 +399,14 @@ function simple_ajax_chat() {
 
 				<fieldset id="sac-user-info">
 					<label for="sac_name"><?php _e('Name'); ?>:</label>
-					<input type="text" name="sac_name" id="sac_name" value="<?php if ($_COOKIE['sacUserName']) { echo $_COOKIE['sacUserName']; } ?>" />
+					<input type="text" name="sac_name" id="sac_name" value="<?php if ($_COOKIE['sacUserName']) { echo $_COOKIE['sacUserName']; } ?>" placeholder="Name" />
 				</fieldset>
 
 				<?php } if (!$use_url) { echo '<div style="display:none;">'; } ?>
 
 				<fieldset id="sac-user-url">
 					<label for="sac_url"><?php _e('URL'); ?>:</label>
-					<input type="text" name="sac_url" id="sac_url" value="<?php if ($_COOKIE['sacUrl']) { echo $_COOKIE['sacUrl']; } else { echo 'http://'; } ?>" />
+					<input type="text" name="sac_url" id="sac_url" value="<?php if ($_COOKIE['sacUrl']) { echo $_COOKIE['sacUrl']; } else { echo 'http://'; } ?>" placeholder="URL" />
 				</fieldset>
 				<?php if (!$use_url) { echo '</div>'; } ?>
 
@@ -414,7 +415,7 @@ function simple_ajax_chat() {
 
 				<?php if ($use_textarea) { ?>
 
-					<textarea name="sac_chat" id="sac_chat" rows="3" onkeypress="return pressedEnter(this,event);"></textarea>
+					<textarea name="sac_chat" id="sac_chat" rows="3" onkeypress="return pressedEnter(this,event);" placeholder="Message"></textarea>
 
 				<?php } else { ?>
 
@@ -520,7 +521,7 @@ $sac_default_plugin_options = array(
 	'sac_enable_style'    => true,
 	'sac_default_message' => 'Welcome to the Chat Forum',
 	'sac_default_handle'  => 'Simple Ajax Chat',
-	'sac_custom_styles'   => 'div#simple-ajax-chat{width:100%;overflow:hidden}div#sac-content{display:none}div#sac-output{float:left;width:58%;height:250px;overflow:auto;border:1px solid #efefef}div#sac-latest-message{padding:5px 10px;background-color:#efefef}ul#sac-messages{margin:0;padding:0;font-size:13px;line-height:16px}ul#sac-messages li{margin:0;padding:3px 3px 3px 10px}ul#sac-messages li span{font-weight:bold}div#sac-panel{float:right;width:40%}form#sac-form fieldset label,form#sac-form fieldset input,form#sac-form fieldset textarea{float:left;clear:both;width:94%;margin:0 0 5px 2px}form#sac-form fieldset#sac-user-info label,form#sac-form fieldset#sac-user-url label,form#sac-form fieldset#sac-user-chat label{margin:0 0 0 2px}',
+	'sac_custom_styles'   => 'div#simple-ajax-chat{width:100%;overflow:hidden}div#sac-content{display:none}div#sac-output{float:left;width:58%;height:250px;overflow:auto;border:1px solid #efefef}div#sac-latest-message{padding:5px 10px;background-color:#efefef}ul#sac-messages{margin:0;padding:0;font-size:13px;line-height:16px}ul#sac-messages li{margin:0;padding:3px 3px 3px 10px}ul#sac-messages li span{font-weight:bold}div#sac-panel{float:right;width:40%}form#sac-form fieldset{border:0;}form#sac-form fieldset label,form#sac-form fieldset input,form#sac-form fieldset textarea{float:left;clear:both;width:94%;margin:0 0 5px 2px}form#sac-form fieldset#sac-user-info label,form#sac-form fieldset#sac-user-url label,form#sac-form fieldset#sac-user-chat label{margin:0 0 0 2px}',
 	'sac_content_chat'    => '',
 	'sac_content_form'    => '',
 	'sac_script_url'      => '',
