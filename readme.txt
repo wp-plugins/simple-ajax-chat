@@ -87,7 +87,7 @@ Screenshots available at the [SAC Homepage](http://perishablepress.com/simple-aj
 = 20121119 =
 
 * Fixed PHP Warning: [function.stristr]: Empty delimiter (line 282)
-* Removed fieldset border in default form styles
+* Removed fieldset border in default form styles (plugin settings)
 * Added placeholders for name, URL, and chat message
 
 = 20121110 =
