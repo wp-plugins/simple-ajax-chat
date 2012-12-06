@@ -5,7 +5,7 @@
 	Description: Displays a fully customizable Ajax-powered chat box anywhere on your site.
 	Author: Jeff Starr
 	Author URI: http://monzilla.biz/
-	Version: 20121119
+	Version: 20121206
 	License: GPL v2
 	Usage: Visit the plugin's settings page for shortcodes, template tags, and more information.
 	Tags: chat, box, ajax, forum
@@ -21,7 +21,7 @@
 $sac_plugin  = 'Simple Ajax Chat';
 $sac_path    = 'simple-ajax-chat/simple-ajax-chat.php';
 $sac_homeurl = 'http://perishablepress.com/simple-ajax-chat/';
-$sac_version = '20121119';
+$sac_version = '20121206';
 
 $sac_admin_user_level   = 8;
 $sac_number_of_comments = 999;
@@ -232,7 +232,7 @@ if ($sac_user_name != '' && $sac_user_text != '' && $sacSendChat == "yes") {
 // prepare the config file
 function sac_prepare_file() {
 
-	error_reporting(E_ALL ^ E_NOTICE);
+	error_reporting(0);
 
 	$html = implode('', file("../../../wp-config.php"));
 	$html = str_replace ("require_once", "// ", $html);
@@ -334,14 +334,20 @@ function simple_ajax_chat() {
 		$custom_styles = '<style type="text/css">' . $sac_options['sac_custom_styles'] . '</style>';
 	}
 	if ($sac_options['sac_content_chat'] !== '') {
-		$custom_chat = $sac_options['sac_content_chat'];
+		$custom_chat_pre = $sac_options['sac_content_chat'];
 	}
 	if ($sac_options['sac_content_form'] !== '') {
-		$custom_form = $sac_options['sac_content_form'];
+		$custom_form_pre = $sac_options['sac_content_form'];
+	} 
+	if ($sac_options['sac_chat_append'] !== '') {
+		$custom_chat_app = $sac_options['sac_chat_append'];
+	}
+	if ($sac_options['sac_form_append'] !== '') {
+		$custom_form_app = $sac_options['sac_form_append'];
 	} ?>
 
 	<div id="simple-ajax-chat">
-		<?php echo $custom_chat; ?>
+		<?php echo $custom_chat_pre; ?>
 
 		<div id="sac-content"></div>
 		<div id="sac-output">
@@ -378,13 +384,16 @@ function simple_ajax_chat() {
 			</ul>
 		</div>
 
-	<?php get_currentuserinfo();
+		<?php echo $custom_chat_app; ?>
 
-	if ((!$registered_only) || (($registered_only) && ($user_ID))) { ?>
+
+
+
+	<?php get_currentuserinfo();
+	if ((!$registered_only) || (($registered_only) && ($user_ID))) { 
+		echo $custom_form_pre; ?>
 
 		<div id="sac-panel">
-			<?php echo $custom_form; ?>
-
 			<form id="sac-form" method="post" action="<?php bloginfo('wpurl'); ?>/wp-content/plugins/<?php echo $sac_path; ?>">
 
 				<?php if (!empty($user_nickname)) { ?>
@@ -440,6 +449,8 @@ function simple_ajax_chat() {
 		</div>
 
 	<?php } ?>
+
+		<?php echo $custom_chat_app; ?>
 
 	</div>
 	<?php echo $custom_styles; ?>
@@ -525,6 +536,8 @@ $sac_default_plugin_options = array(
 	'sac_content_chat'    => '',
 	'sac_content_form'    => '',
 	'sac_script_url'      => '',
+	'sac_chat_append'     => '',
+	'sac_form_append'     => '',
 );
 
 // delete plugin settings
@@ -589,7 +602,7 @@ function sac_validate_options($input) {
 
 	// dealing with kses
 	global $allowedposttags;
-	$allowed_atts = array('align'=>array(), 'class'=>array(), 'id'=>array(), 'dir'=>array(), 'lang'=>array(), 'style'=>array(), 'xml:lang'=>array(), 'src'=>array(), 'alt'=>array());
+	$allowed_atts = array('align'=>array(), 'class'=>array(), 'id'=>array(), 'dir'=>array(), 'lang'=>array(), 'style'=>array(), 'xml:lang'=>array(), 'src'=>array(), 'alt'=>array(), 'href'=>array(), 'title'=>array());
 
 	$allowedposttags['strong'] = $allowed_atts;
 	$allowedposttags['small'] = $allowed_atts;
@@ -612,6 +625,8 @@ function sac_validate_options($input) {
 
 	$input['sac_content_chat'] = wp_kses_post($input['sac_content_chat'], $allowedposttags);
 	$input['sac_content_form'] = wp_kses_post($input['sac_content_form'], $allowedposttags);
+	$input['sac_chat_append'] = wp_kses_post($input['sac_chat_append'], $allowedposttags);
+	$input['sac_form_append'] = wp_kses_post($input['sac_form_append'], $allowedposttags);
 
 	return $input;
 }
@@ -849,14 +864,24 @@ function sac_render_form() {
 							<div class="mm-table-wrap">
 								<table class="widefat mm-table">
 									<tr>
-										<th scope="row"><label class="description" for="sac_options[sac_content_chat]"><?php _e('Custom chat markup'); ?></label></th>
+										<th scope="row"><label class="description" for="sac_options[sac_content_chat]"><?php _e('Custom content before chat box'); ?></label></th>
 										<td><textarea class="textarea" rows="3" cols="50" name="sac_options[sac_content_chat]"><?php echo esc_textarea($sac_options['sac_content_chat']); ?></textarea>
-										<div class="mm-item-caption"><?php _e('Here you may specify any custom text/markup that will appear before the chat box. Note: leave blank to disable.'); ?></div></td>
+										<div class="mm-item-caption"><?php _e('Here you may specify any custom text/markup that will appear <strong>before</strong> the chat box. Note: leave blank to disable.'); ?></div></td>
 									</tr>
 									<tr>
-										<th scope="row"><label class="description" for="sac_options[sac_content_form]"><?php _e('Custom form markup'); ?></label></th>
+										<th scope="row"><label class="description" for="sac_options[sac_chat_append]"><?php _e('Custom content after chat box'); ?></label></th>
+										<td><textarea class="textarea" rows="3" cols="50" name="sac_options[sac_chat_append]"><?php echo esc_textarea($sac_options['sac_chat_append']); ?></textarea>
+										<div class="mm-item-caption"><?php _e('Here you may specify any custom text/markup that will appear <strong>after</strong> the chat box. Note: leave blank to disable.'); ?></div></td>
+									</tr>
+									<tr>
+										<th scope="row"><label class="description" for="sac_options[sac_content_form]"><?php _e('Custom content before chat form'); ?></label></th>
 										<td><textarea class="textarea" rows="3" cols="50" name="sac_options[sac_content_form]"><?php echo esc_textarea($sac_options['sac_content_form']); ?></textarea>
-										<div class="mm-item-caption"><?php _e('Here you may specify any custom text/markup that will appear before the chat form.  Note: leave blank to disable.'); ?></div></td>
+										<div class="mm-item-caption"><?php _e('Here you may specify any custom text/markup that will appear <strong>before</strong> the chat form.  Note: leave blank to disable.'); ?></div></td>
+									</tr>
+									<tr>
+										<th scope="row"><label class="description" for="sac_options[sac_form_append]"><?php _e('Custom content after chat form'); ?></label></th>
+										<td><textarea class="textarea" rows="3" cols="50" name="sac_options[sac_form_append]"><?php echo esc_textarea($sac_options['sac_form_append']); ?></textarea>
+										<div class="mm-item-caption"><?php _e('Here you may specify any custom text/markup that will appear <strong>after</strong> the chat form.  Note: leave blank to disable.'); ?></div></td>
 									</tr>
 								</table>
 							</div>

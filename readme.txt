@@ -9,8 +9,8 @@ Contributors: specialk
 Donate link: http://digwp.com/book/
 Requires at least: 3.4
 Tested up to: 3.4.2
-Version: 20121119
-Stable tag: 20121119
+Version: 20121206
+Stable tag: 20121206
 License: GPLv2 or later
 Usage: Visit the plugin's settings page for shortcodes, template tags, and more information.
 Tags: chat, box, ajax, forum
@@ -83,6 +83,12 @@ To upgrade, simply upload the new version and you should be good to go.
 Screenshots available at the [SAC Homepage](http://perishablepress.com/simple-ajax-chat/#screenshots).
 
 == Changelog ==
+
+= 20121206 =
+
+* Edited line 217 to define variable and fix "timeout" error
+* Enhanced markup for custom content
+* Custom content may be added before and/or after the chat form and/or the list of chat messages
 
 = 20121119 =
 

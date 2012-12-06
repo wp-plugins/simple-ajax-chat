@@ -214,7 +214,7 @@ function handlehHttpReceiveChat(){
 				insertNewContent(results[i+1],results[i+2],results[i+3],results[i+4], results[i]);
 				document.getElementById('sac_lastID').value = parseInt(results[i]) + 1;
 			}
-			sac_timeout = jal_org_timeout;
+			sac_timeout = sac_org_timeout;
 			sac_loadtimes = 1;
 		}
 	}
