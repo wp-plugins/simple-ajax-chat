@@ -442,15 +442,19 @@ function simple_ajax_chat() {
 			</form>
 		</div>
 
+		<?php echo $custom_form_app; ?>
+
 	<?php } else { ?>
+
+		<?php echo $custom_form_pre; ?>
 
 		<div id="sac-panel">
 			<p>You must be a registered user to participate in this chat.</p>
 		</div>
 
-	<?php } ?>
+		<?php echo $custom_form_app; ?>
 
-		<?php echo $custom_chat_app; ?>
+	<?php } ?>
 
 	</div>
 	<?php echo $custom_styles; ?>
