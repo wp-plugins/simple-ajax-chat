@@ -8,9 +8,9 @@ Author URI: http://monzilla.biz/
 Contributors: specialk
 Donate link: http://digwp.com/book/
 Requires at least: 3.4
-Tested up to: 3.4.2
-Version: 20121206
-Stable tag: 20121206
+Tested up to: 3.5
+Version: 20130103
+Stable tag: 20130103
 License: GPLv2 or later
 Usage: Visit the plugin's settings page for shortcodes, template tags, and more information.
 Tags: chat, box, ajax, forum
@@ -82,7 +82,17 @@ To upgrade, simply upload the new version and you should be good to go.
 
 Screenshots available at the [SAC Homepage](http://perishablepress.com/simple-ajax-chat/#screenshots).
 
+Live Demo available at [WP-Mix](http://wp-mix.com/chat/).
+
 == Changelog ==
+
+= 20130103 =
+
+* Added margins to submit buttons (now required in WP 3.5)
+* Added "div#sac-panel p {}" to default CSS
+* Added links to demo in readme.txt file
+* Updated all instances of $wpdb->prepare with new syntax
+* Added option for sound to play for new chat messages (note: chat-sound technique is borrowed from "Pierre's Wordspew")
 
 = 20121206 =
 

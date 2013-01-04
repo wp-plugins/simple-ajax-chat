@@ -5,7 +5,7 @@
 	Description: Displays a fully customizable Ajax-powered chat box anywhere on your site.
 	Author: Jeff Starr
 	Author URI: http://monzilla.biz/
-	Version: 20121206
+	Version: 20130103
 	License: GPL v2
 	Usage: Visit the plugin's settings page for shortcodes, template tags, and more information.
 	Tags: chat, box, ajax, forum
@@ -21,7 +21,7 @@
 $sac_plugin  = 'Simple Ajax Chat';
 $sac_path    = 'simple-ajax-chat/simple-ajax-chat.php';
 $sac_homeurl = 'http://perishablepress.com/simple-ajax-chat/';
-$sac_version = '20121206';
+$sac_version = '20130103';
 
 $sac_admin_user_level   = 8;
 $sac_number_of_comments = 999;
@@ -329,6 +329,7 @@ function simple_ajax_chat() {
 	$use_textarea    = $sac_options['sac_use_textarea'];
 	$registered_only = $sac_options['sac_registered_only']; 
 	$enable_styles   = $sac_options['sac_enable_style'];
+	$play_sound      = $sac_options['sac_play_sound'];
 
 	if ($enable_styles) {
 		$custom_styles = '<style type="text/css">' . $sac_options['sac_custom_styles'] . '</style>';
@@ -354,8 +355,8 @@ function simple_ajax_chat() {
 
 	<?php 
 	$wpdb->hide_errors();
-	$results = $wpdb->get_results($wpdb->prepare("SELECT * FROM " . $table_prefix . "ajax_chat ORDER BY id DESC LIMIT " . $sac_number_of_comments));
-	$wpdb->show_errors();
+	$results = $wpdb->get_results($wpdb->prepare("SELECT * FROM " . $table_prefix . "ajax_chat ORDER BY id DESC LIMIT %d", $sac_number_of_comments));
+	//$wpdb->show_errors();
 
 	// only add last message <div> if looping for first time
 	$sac_first_time = true; 
@@ -440,6 +441,16 @@ function simple_ajax_chat() {
 					<input type="hidden" name="sac_process" value="true" />
 				</div>
 			</form>
+			<?php if ($play_sound == true) { 
+				$res_path = get_bloginfo('wpurl') . '/wp-content/plugins/simple-ajax-chat/resources/'; ?>
+
+				<object id="TheBox" type="application/x-shockwave-flash" data="<?php echo $res_path; ?>player.swf" width="1" height="1" style="visibility:hidden;">
+					<param name="movie" value="<?php echo $res_path; ?>player.swf">
+					<param name="AllowScriptAccess" value="always">
+					<param name="FlashVars" value="listener=myBox">
+				</object>
+			<?php } ?>
+
 		</div>
 
 		<?php echo $custom_form_app; ?>
@@ -467,7 +478,7 @@ function sac_shout_edit() {
 	get_currentuserinfo();
 	if ($user_level < $sac_admin_user_level) die();
 	if (isset($_GET['sac_comment_id'])) {
-		$wpdb->query($wpdb->prepare("UPDATE " . $table_prefix . "ajax_chat SET text = '" . $wpdb->escape($_GET['sac_text']) . "' WHERE id = " . $wpdb->escape($_GET['sac_comment_id'])));
+		$wpdb->query($wpdb->prepare("UPDATE " . $table_prefix . "ajax_chat SET text = '" . $wpdb->escape($_GET['sac_text']) . "' WHERE id = %d", $wpdb->escape($_GET['sac_comment_id'])));
 		wp_redirect(admin_url('options-general.php?page=' . $sac_path . '&sac_edit=true'));
 	}
 }
@@ -481,7 +492,7 @@ function sac_shout_delete() {
 	get_currentuserinfo();
 	if ($user_level < $sac_admin_user_level) die();
 	if (isset($_GET['sac_comment_id'])) {
-		$wpdb->query($wpdb->prepare("DELETE FROM " . $table_prefix . "ajax_chat WHERE id = " . $wpdb->escape($_GET['sac_comment_id'])));
+		$wpdb->query($wpdb->prepare("DELETE FROM " . $table_prefix . "ajax_chat WHERE id = %d", $wpdb->escape($_GET['sac_comment_id'])));
 		wp_redirect(admin_url('options-general.php?page=' . $sac_path . '&sac_delete=true'));
 	}
 }
@@ -499,8 +510,8 @@ function sac_shout_truncate() {
 	get_currentuserinfo();
 	if ($user_level < $sac_admin_user_level) die();
 
-	$wpdb->query($wpdb->prepare("TRUNCATE TABLE " . $table_prefix . "ajax_chat"));
-	$wpdb->query($wpdb->prepare("INSERT INTO " . $table_prefix . "ajax_chat (time, name, text) VALUES ('" . time() . "','" . $default_handle . "','" . $default_message . "')"));
+	$wpdb->query("TRUNCATE TABLE " . $table_prefix . "ajax_chat");
+	$wpdb->query("INSERT INTO " . $table_prefix . "ajax_chat (time, name, text) VALUES ('" . time() . "','" . $default_handle . "','" . $default_message . "')");
 
 	$redirect = add_query_arg(array('sac_truncate'=>false, 'sac_truncate_success'=>'true'), admin_url('options-general.php?page=' . $sac_path));
 	wp_redirect($redirect);
@@ -542,6 +553,7 @@ $sac_default_plugin_options = array(
 	'sac_script_url'      => '',
 	'sac_chat_append'     => '',
 	'sac_form_append'     => '',
+	'sac_play_sound'      => true,
 );
 
 // delete plugin settings
@@ -592,6 +604,9 @@ function sac_validate_options($input) {
 
 	if (!isset($input['sac_enable_style'])) $input['sac_enable_style'] = null;
 	$input['sac_enable_style'] = ($input['sac_enable_style'] == 1 ? 1 : 0);
+
+	if (!isset($input['sac_play_sound'])) $input['sac_play_sound'] = null;
+	$input['sac_play_sound'] = ($input['sac_play_sound'] == 1 ? 1 : 0);
 
 	$input['sac_update_seconds']  = wp_filter_nohtml_kses($input['sac_update_seconds']);
 	$input['sac_fade_length']     = wp_filter_nohtml_kses($input['sac_fade_length']);
@@ -651,7 +666,7 @@ function sac_add_options_page() {
 // create the options page
 function sac_render_form() {
 	global $wpdb, $sac_plugin, $sac_path, $sac_homeurl, $sac_version, $sac_number_of_comments; 
-	$chats = $wpdb->get_results($wpdb->prepare("SELECT * FROM " . $wpdb->prefix . "ajax_chat ORDER BY id DESC LIMIT " . $sac_number_of_comments)); 
+	$chats = $wpdb->get_results($wpdb->prepare("SELECT * FROM " . $wpdb->prefix . "ajax_chat ORDER BY id DESC LIMIT %d", $sac_number_of_comments)); 
 
 	$chat_report = 'Currently there';
 	if (!empty($chats)) {
@@ -691,7 +706,7 @@ function sac_render_form() {
 
 		#setting-error-settings_updated { margin: 10px 0; }
 		#setting-error-settings_updated p { margin: 5px; }
-		.button-primary, .button-secondary { margin: 0 0 15px 15px; }
+		#mm-plugin-options .button-primary, #mm-plugin-options .button-secondary { margin: 0 0 15px 15px; }
 
 		#mm-plugin-options #mm-chat-list { margin-left: 15px; }
 		#mm-chat-list li { width: 100%; overflow: hidden; list-style-type: none; }
@@ -797,6 +812,11 @@ function sac_render_form() {
 											<input type="text" size="50" maxlength="200" name="sac_options[sac_default_message]" value="<?php echo $sac_options['sac_default_message']; ?>" />
 											<div class="mm-item-caption"><?php _e('Here you may customize the &ldquo;welcome&rdquo; message that appears as the first chat comment. Note: reset/clear the chat messages for the new welcome message to be displayed.'); ?></div>
 										</td>
+									</tr>
+									<tr>
+										<th scope="row"><label class="description" for="sac_options[sac_play_sound]"><?php _e('Sound alerts?'); ?></label></th>
+										<td><input type="checkbox" name="sac_options[sac_play_sound]" value="1" <?php if (isset($sac_options['sac_play_sound'])) { checked('1', $sac_options['sac_play_sound']); } ?> /> 
+										<span class="mm-item-caption"><?php _e('Check this box if you want to hear a sound for new chat messages. Tip: to change the sound file, replace the file "msg.mp3" with any (short) mp3 file.'); ?></span></td>
 									</tr>
 								</table>
 							</div>

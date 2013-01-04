@@ -52,6 +52,8 @@ div#simple-ajax-chat {} /* contains everything */
 		form#sac-form div#sac-user-submit {}
 		form#sac-form div#sac-user-submit input#submitchat {}
 
+		/* login required */
+		div#sac-panel p {}
 
 
 /* minimal theme */
@@ -103,3 +105,6 @@ div#simple-ajax-chat { width: 100%; overflow: hidden; } /* contains everything *
 		/* submit button */
 		form#sac-form div#sac-user-submit {}
 		form#sac-form div#sac-user-submit input#submitchat {}
+
+		/* login required */
+		div#sac-panel p {}

@@ -224,6 +224,13 @@ function insertNewContent(liName,liText,lastResponse, liUrl, liId){
 	response = document.getElementById("responseTime");
 	response.replaceChild(document.createTextNode(lastResponse), response.firstChild);
 	insertO = document.getElementById("sac-messages");
+	
+	<?php $res_path = get_bloginfo('wpurl') . '/wp-content/plugins/simple-ajax-chat/resources/'; ?>
+	if(document.getElementById("TheBox")) {
+		document.getElementById("TheBox").SetVariable("method:setUrl", "<?php echo $res_path; ?>msg.mp3");
+		document.getElementById("TheBox").SetVariable("method:play", "");
+	}
+
 	oLi = document.createElement('li');
 	oLi.setAttribute('id','comment-new'+liId);
 	oSpan = document.createElement('span');
