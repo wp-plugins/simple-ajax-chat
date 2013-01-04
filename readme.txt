@@ -9,8 +9,8 @@ Contributors: specialk
 Donate link: http://digwp.com/book/
 Requires at least: 3.4
 Tested up to: 3.5
-Version: 20130103
-Stable tag: 20130103
+Version: 20130104
+Stable tag: 20130104
 License: GPLv2 or later
 Usage: Visit the plugin's settings page for shortcodes, template tags, and more information.
 Tags: chat, box, ajax, forum
@@ -86,6 +86,10 @@ Screenshots available at the [SAC Homepage](http://perishablepress.com/simple-aj
 Live Demo available at [WP-Mix](http://wp-mix.com/chat/).
 
 == Changelog ==
+
+= 20130104 =
+
+* Added JavaScript to set up sound-alerts (fixes undefined variable error)
 
 = 20130103 =
 

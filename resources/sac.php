@@ -146,6 +146,10 @@ function filter_smilies(s){
 	return s;
 }
 
+// set up sound alerts
+var myBox = new Object();
+myBox.onInit = function() {}
+
 // Generic onload by Brothercake @ http://www.brothercake.com/site/resources/scripts/onload/
 
 if(typeof window.addEventListener != 'undefined'){

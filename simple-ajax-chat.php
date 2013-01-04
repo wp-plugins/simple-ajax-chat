@@ -5,7 +5,7 @@
 	Description: Displays a fully customizable Ajax-powered chat box anywhere on your site.
 	Author: Jeff Starr
 	Author URI: http://monzilla.biz/
-	Version: 20130103
+	Version: 20130104
 	License: GPL v2
 	Usage: Visit the plugin's settings page for shortcodes, template tags, and more information.
 	Tags: chat, box, ajax, forum
@@ -21,7 +21,7 @@
 $sac_plugin  = 'Simple Ajax Chat';
 $sac_path    = 'simple-ajax-chat/simple-ajax-chat.php';
 $sac_homeurl = 'http://perishablepress.com/simple-ajax-chat/';
-$sac_version = '20130103';
+$sac_version = '20130104';
 
 $sac_admin_user_level   = 8;
 $sac_number_of_comments = 999;
