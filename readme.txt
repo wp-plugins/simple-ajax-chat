@@ -39,6 +39,7 @@ Simple Ajax Chat makes it easy for your visitors to chat with each other on your
 * Automatic smileys supported :)
 * On-demand restoration of all default settings
 * Super-slick toggling settings page
+* Option to play sound alert for chat messages
 
 **Customize everything**
 
