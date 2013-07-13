@@ -6,14 +6,14 @@ Description: Displays a fully customizable Ajax-powered chat box anywhere on you
 Author: Jeff Starr
 Author URI: http://monzilla.biz/
 Contributors: specialk
-Donate link: http://digwp.com/book/
+Donate link: http://m0n.co/donate
 Requires at least: 3.4
 Tested up to: 3.5
-Version: 20130104
-Stable tag: 20130104
-License: GPLv2 or later
+Version: 20130712
+Stable tag: trunk
+License: GPL v2 or later
 Usage: Visit the plugin's settings page for shortcodes, template tags, and more information.
-Tags: chat, box, ajax, forum
+Tags: chat, box, ajax, forum, private, avatars, filtering, smilies, secure, antispam, html5
 
 Simple Ajax Chat displays a fully customizable Ajax-powered chat box anywhere on your site.
 
@@ -23,6 +23,7 @@ Simple Ajax Chat makes it easy for your visitors to chat with each other on your
 
 **Features**
 
+* NEW: strong anti-spam filters
 * Plug-n-play functionality
 * No configuration required, just include shortcode or template tag
 * Display on any post or page with the shortcode
@@ -59,9 +60,17 @@ Simple Ajax Chat makes it easy for your visitors to chat with each other on your
 
 == Installation ==
 
+**Installation**
+
 Activate the plugin and visit the SAC settings page to customize your options.
 
 Once everything is customized as you like it, display the form anywhere using the shortcode or template tag.
+
+**Upgrading**
+
+If you are upgrading the plugin, be sure to backup your existing SAC settings (as a precaution). 
+
+Then upgrade normally, check that the settings are good, and delete the plugin's only `/images/` directory. Done.
 
 **Shortcode**
 
@@ -75,6 +84,25 @@ Use this template tag to display the chat box anywhere in your theme template:
 
 `&lt;?php if (function_exists('simple_ajax_chat')) simple_ajax_chat(); ?&gt;`
 
+**Stopping spam**
+
+This plugin works in two modes:
+
+* "Open air" mode - anyone can comment
+* "Private" mode - only logged in users may comment
+
+In terms of chat spam, the "open air" mode is much improved at blocking spam, but some spam still gets through the filters. As a general rule, the longer your chat forum is online, the more of a target it will be for spammers.
+
+If you absolutely don't want any spam, run the plugin in "private" mode. In private mode, the chat forum will require login to view and use, and no spam should make it through.
+
+Alternately/optionally you may use the included .htaccess file to add some simple rules to block users by IP and other variables.
+
+**Other notes**
+
+If the chat form looks messed up on your theme, try disabling the checkbox for "Enable custom styles?"
+
+If that doesn't help, you can include your own custom CSS. To do so, replace the "Custom CSS styles" with your own, and then enable the "Enable custom styles?" setting. Alternately, you may include custom CSS via your theme's stylesheet.
+
 == Upgrade Notice ==
 
 To upgrade, simply upload the new version and you should be good to go.
@@ -86,6 +114,22 @@ Screenshots available at the [SAC Homepage](http://perishablepress.com/simple-aj
 Live Demo available at [WP-Mix](http://wp-mix.com/chat/).
 
 == Changelog ==
+
+= 20130712 =
+
+* Reorganized file/directory structure
+* Separated Ajax stuff from core plugin
+* Implemented strong anti-spam measures
+* Many functions rewritten to maximize native WP functionality
+* Improved audio support for chat alerts, fixed Safari bug
+* Fixed: case-insensitive banned phrases
+* Fixed: default options not working on install
+* Fixed: a bunch of annoying PHP Notices
+* Added .sac-reg-req for registration message div#sac-panel
+* Updated CSS skeleton with new selector (@ "/resources/sac.css")
+* Fixed: enable/disable links for usernames now works properly
+* General code check n clean
+* added comments to the .htaccess file (no active rules are included)
 
 = 20130104 =
 
@@ -121,6 +165,6 @@ To ask a question, visit the [SAC Homepage](http://perishablepress.com/simple-aj
 
 == Donations ==
 
-I created this plugin with love for the WP community. To show support, consider purchasing my new book, [.htaccess made easy](http://htaccessbook.com/), or my WordPress book, [Digging into WordPress](http://digwp.com/).
+I created this plugin with love for the WP community. To show support, consider purchasing one of my books: [The Tao of WordPress](http://wp-tao.com/), [Digging into WordPress](http://digwp.com/), or [.htaccess made easy](http://htaccessbook.com/).
 
 Links, tweets and likes also appreciated. Thanks! :)

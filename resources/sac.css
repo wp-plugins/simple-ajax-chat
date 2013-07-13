@@ -54,6 +54,7 @@ div#simple-ajax-chat {} /* contains everything */
 
 		/* login required */
 		div#sac-panel p {}
+		div#sac-panel.sac-reg-req {}
 
 
 /* minimal theme */

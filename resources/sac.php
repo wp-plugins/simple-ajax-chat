@@ -1,4 +1,4 @@
-<?php // Simple Ajax Chat - JavaScript for Ajax enhancement
+<?php // Simple Ajax Chat > JavaScript
 
 	header("Cache-Control: must-revalidate");
 	$offset = 60*60*24*60;
@@ -6,10 +6,10 @@
 	header($ExpStr);
 	header('Content-Type: application/x-javascript');
 	include("../../../../wp-config.php");
-
 ?>
-// Fade Anything Technique (FAT) by Adam Michela
+// Simple Ajax Chat > JavaScript
 
+// Fade Anything Technique (FAT) by Adam Michela
 var Fat = {
 	make_hex : function(r,g,b){
 		r = r.toString(16); if (r.length == 1) r = '0' + r;
@@ -228,18 +228,17 @@ function insertNewContent(liName,liText,lastResponse, liUrl, liId){
 	response = document.getElementById("responseTime");
 	response.replaceChild(document.createTextNode(lastResponse), response.firstChild);
 	insertO = document.getElementById("sac-messages");
-	
-	<?php $res_path = get_bloginfo('wpurl') . '/wp-content/plugins/simple-ajax-chat/resources/'; ?>
-	if(document.getElementById("TheBox")) {
-		document.getElementById("TheBox").SetVariable("method:setUrl", "<?php echo $res_path; ?>msg.mp3");
-		document.getElementById("TheBox").SetVariable("method:play", "");
-	}
+
+	var audio = document.getElementById("TheBox");
+	audio.play();
 
 	oLi = document.createElement('li');
 	oLi.setAttribute('id','comment-new'+liId);
 	oSpan = document.createElement('span');
 	oSpan.setAttribute('class','name');
 	oName = document.createTextNode(liName);
+	
+	<?php $use_url = $sac_options['sac_use_url']; if ($use_url) { ?>
 	if (liUrl != "http://" && liUrl != '') {
 		oURL = document.createElement('a');
 		oURL.href = liUrl;
@@ -249,6 +248,11 @@ function insertNewContent(liName,liText,lastResponse, liUrl, liId){
 		oURL = oName;
 	}
 	oSpan.appendChild(oURL);
+	<?php } else { ?>
+	oURL = oName;
+	oSpan.appendChild(oURL);
+	<?php } ?>
+	
 	oSpan.appendChild(document.createTextNode(' : '));
 	oLi.appendChild(oSpan);
 	oLi.innerHTML += sac_apply_filters(liText);
@@ -262,7 +266,7 @@ function sendComment() {
 		if (currentChatText == '') return;
 		currentName = document.getElementById('sac_name').value;
 		currentUrl = document.getElementById('sac_url').value;
-		param = 'n='+ encodeURIComponent(currentName)+'&c='+ encodeURIComponent(currentChatText) +'&u='+ encodeURIComponent(currentUrl);	
+		param = 'n='+ encodeURIComponent(currentName)+'&c='+ encodeURIComponent(currentChatText) +'&u='+ encodeURIComponent(currentUrl);
 		httpSendChat.open("POST", SendChaturl, true);
 		httpSendChat.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
 		httpSendChat.onreadystatechange = receiveChatText;
