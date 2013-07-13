@@ -6,7 +6,7 @@
 	Author: Jeff Starr
 	Author URI: http://monzilla.biz/
 	Donate link: http://m0n.co/donate
-	Version: 20130712
+	Version: 20130713
 	License: GPL v2
 	Usage: Visit the plugin's settings page for shortcodes, template tags, and more information.
 	Tags: chat, box, ajax, forum
@@ -14,7 +14,7 @@
 
 // NO EDITING REQUIRED - PLEASE SET PREFERENCES IN THE WP ADMIN!
 
-$sac_version = '20130712';
+$sac_version = '20130713';
 $sac_plugin  = 'Simple Ajax Chat';
 $sac_path    = 'simple-ajax-chat/simple-ajax-chat-admin.php';
 $sac_homeurl = 'http://perishablepress.com/simple-ajax-chat/';
@@ -57,7 +57,7 @@ add_action('admin_init', 'sac_require_wp_version');
 // display settings link on plugin page
 function sac_plugin_action_links($links) {
 	global $sac_path;
-	return array_merge(array('settings'=>'<a href="' . get_bloginfo('wpurl') . '/wp-admin/options-general.php?page=' . $sac_path . '">' . __('Settings', 'sac') .'</a>'), $links);
+	return array_merge(array('settings'=>'<a href="' . site_url() . '/wp-admin/options-general.php?page=' . $sac_path . '">' . __('Settings', 'sac') .'</a>'), $links);
 }
 add_filter('plugin_action_links_'.plugin_basename(__FILE__), 'sac_plugin_action_links');
 
@@ -273,7 +273,7 @@ function sac_shout_truncate() {
 		$default_message = $sac_options['sac_default_message'];
 		$default_handle  = $sac_options['sac_default_handle'];
 		$sac_script_url  = $sac_options['sac_script_url'];
-		if ($sac_script_url === '') $sac_script_url = get_bloginfo('wpurl');
+		if ($sac_script_url === '') $sac_script_url = site_url();
 
 		$wpdb->query("TRUNCATE TABLE " . $table_prefix . "ajax_chat");
 		$wpdb->query("INSERT INTO " . $table_prefix . "ajax_chat (time, name, text, url, ip) VALUES ('". time() ."','". $default_handle ."','". $default_message ."','". $sac_script_url ."','". $ip ."')");

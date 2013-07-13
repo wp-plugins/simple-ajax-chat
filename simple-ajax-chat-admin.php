@@ -207,48 +207,48 @@ function sac_render_form() {
 		<h2><?php echo $sac_plugin; ?> <small><?php echo 'v' . $sac_version; ?></small></h2>
 		<?php if (isset($_GET['sac_delete'])) { ?>
 		<div id="setting-error-settings_updated" class="updated settings-error">
-			<p><strong><?php _e('The comment was deleted successfully.'); ?></strong></p>
+			<p><strong><?php _e('The comment was deleted successfully.', 'sac'); ?></strong></p>
 		</div>
 		<?php } if (isset($_GET['sac_edit'])) { ?>
 		<div id="setting-error-settings_updated" class="updated settings-error">
-			<p><strong><?php _e('The comment was edited successfully.'); ?></strong></p>
+			<p><strong><?php _e('The comment was edited successfully.', 'sac'); ?></strong></p>
 		</div>
 		<?php } if (isset($_GET['sac_truncate_success'])) { ?>
 		<div id="setting-error-settings_updated" class="updated settings-error">
-			<p><strong><?php _e('All chat messages have been cleared from the database.'); ?></strong></p>
+			<p><strong><?php _e('All chat messages have been cleared from the database.', 'sac'); ?></strong></p>
 		</div>
 		<?php } if (isset($_GET['sac_restore_success'])) { ?>
 		<div id="setting-error-settings_updated" class="updated settings-error">
-			<p><strong><?php _e('Options successfully restored to default settings.'); ?></strong></p>
+			<p><strong><?php _e('Options successfully restored to default settings.', 'sac'); ?></strong></p>
 		</div>
 		<?php } ?>
 
-		<div id="mm-panel-toggle"><a href="<?php get_admin_url() . 'options-general.php?page=' . $sac_path; ?>"><?php _e('Toggle all panels'); ?></a></div>
+		<div id="mm-panel-toggle"><a href="<?php get_admin_url() . 'options-general.php?page=' . $sac_path; ?>"><?php _e('Toggle all panels', 'sac'); ?></a></div>
 		<div class="metabox-holder">
 			<div class="meta-box-sortables ui-sortable">
 	
 				<div id="mm-panel-overview" class="postbox">
-					<h3><?php _e('Overview'); ?></h3>
+					<h3><?php _e('Overview', 'sac'); ?></h3>
 					<div class="toggle">
 						<div class="mm-panel-overview">
 							<p>
-								<strong><?php echo $sac_plugin; ?></strong> <?php _e('(SAC) displays an Ajax-powered chat box anywhere on your site.'); ?>
-								<?php _e('Use the shortcode to display the chat box on a post or page. Use the template tag to display anywhere in your theme template.'); ?>
+								<strong><?php echo $sac_plugin; ?></strong> <?php _e('(SAC) displays an Ajax-powered chat box anywhere on your site.', 'sac'); ?>
+								<?php _e('Use the shortcode to display the chat box on a post or page. Use the template tag to display anywhere in your theme template.', 'sac'); ?>
 							</p>
 							<ul>
-								<li><?php _e('To configure your settings, visit'); ?> <a id="mm-panel-primary-link" href="#mm-panel-primary"><?php _e('Chat Options'); ?></a>.</li>
-								<li><?php _e('For the shortcode and template tag, visit'); ?> <a id="mm-panel-secondary-link" href="#mm-panel-secondary"><?php _e('Template Tag &amp; Shortcode'); ?></a>.</li>
-								<li><?php _e('To manage the current chat messages, visit'); ?> <a id="mm-panel-tertiary-link" href="#mm-panel-tertiary"><?php _e('Manage Chat Messages'); ?></a>.</li>
-								<li><?php _e('To block a word or phrase from chat, visit'); ?> <a id="mm-panel-quaternary-link" href="#mm-panel-quaternary"><?php _e('Banned Phrases'); ?></a>.</li>
-								<li><?php _e('For more information check the'); ?> <a href="<?php echo plugins_url(); ?>/simple-ajax-chat/readme.txt">readme.txt</a> 
-									<?php _e('and'); ?> <a href="<?php echo $sac_homeurl; ?>"><?php _e('SAC Homepage'); ?></a>.</li>
+								<li><?php _e('To configure your settings, visit', 'sac'); ?> <a id="mm-panel-primary-link" href="#mm-panel-primary"><?php _e('Chat Options', 'sac'); ?></a>.</li>
+								<li><?php _e('For the shortcode and template tag, visit', 'sac'); ?> <a id="mm-panel-secondary-link" href="#mm-panel-secondary"><?php _e('Template Tag &amp; Shortcode', 'sac'); ?></a>.</li>
+								<li><?php _e('To manage the current chat messages, visit', 'sac'); ?> <a id="mm-panel-tertiary-link" href="#mm-panel-tertiary"><?php _e('Manage Chat Messages', 'sac'); ?></a>.</li>
+								<li><?php _e('To block a word or phrase from chat, visit', 'sac'); ?> <a id="mm-panel-quaternary-link" href="#mm-panel-quaternary"><?php _e('Banned Phrases', 'sac'); ?></a>.</li>
+								<li><?php _e('For more information check the', 'sac'); ?> <a href="<?php echo plugins_url(); ?>/simple-ajax-chat/readme.txt">readme.txt</a> 
+									<?php _e('and', 'sac'); ?> <a href="<?php echo $sac_homeurl; ?>"><?php _e('SAC Homepage', 'sac'); ?></a>.</li>
 							</ul>
 						</div>
 					</div>
 				</div>
 
 				<div id="mm-panel-primary" class="postbox">
-					<h3><?php _e('Chat Options'); ?></h3>
+					<h3><?php _e('Chat Options', 'sac'); ?></h3>
 
 					<?php if (isset($_GET["settings-updated"]) || isset($_GET["sac_restore_success"])) {
 						$sac_updated_options = true;
@@ -257,156 +257,156 @@ function sac_render_form() {
 					} ?>
 
 					<div class="toggle<?php if (!$sac_updated_options) { echo ' default-hidden'; } ?>">
-						<p><?php _e('Here you may customize Simple Ajax Chat to suit your needs. Note: after updating time and color options, you may need to refresh/empty the browser cache before you see the changes take effect.'); ?></p>
+						<p><?php _e('Here you may customize Simple Ajax Chat to suit your needs. Note: after updating time and color options, you may need to refresh/empty the browser cache before you see the changes take effect.', 'sac'); ?></p>
 						<form method="post" action="options.php">
 							<?php $sac_options = get_option('sac_options'); settings_fields('sac_plugin_options'); ?>
-							<h4><?php _e('General options'); ?></h4>
+							<h4><?php _e('General options', 'sac'); ?></h4>
 							<div class="mm-table-wrap">
 								<table class="widefat mm-table">
 									<tr>
-										<th scope="row"><label class="description" for="sac_options[sac_registered_only]"><?php _e('Require log in?'); ?></label></th>
+										<th scope="row"><label class="description" for="sac_options[sac_registered_only]"><?php _e('Require log in?', 'sac'); ?></label></th>
 										<td><input type="checkbox" name="sac_options[sac_registered_only]" value="1" <?php if (isset($sac_options['sac_registered_only'])) { checked('1', $sac_options['sac_registered_only']); } ?> /> 
-										<span class="mm-item-caption"><?php _e('Check this box to require users to be logged in (i.e., registered users) to use the chat box. If enabled, non-logged-in users will be able to read the chat but not participate.'); ?></span></td>
+										<span class="mm-item-caption"><?php _e('Check this box to require users to be logged in (i.e., registered users) to use the chat box. If enabled, non-logged-in users will be able to read the chat but not participate.', 'sac'); ?></span></td>
 									</tr>
 									<tr>
-										<th scope="row"><label class="description" for="sac_options[sac_use_url]"><?php _e('Enable URL?'); ?></label></th>
+										<th scope="row"><label class="description" for="sac_options[sac_use_url]"><?php _e('Enable URL?', 'sac'); ?></label></th>
 										<td><input type="checkbox" name="sac_options[sac_use_url]" value="1" <?php if (isset($sac_options['sac_use_url'])) { checked('1', $sac_options['sac_use_url']); } ?> /> 
-										<span class="mm-item-caption"><?php _e('Check this box if you want users to be able to include a URL for their chat name.'); ?></span></td>
+										<span class="mm-item-caption"><?php _e('Check this box if you want users to be able to include a URL for their chat name.', 'sac'); ?></span></td>
 									</tr>
 									<tr>
-										<th scope="row"><label class="description" for="sac_options[sac_use_textarea]"><?php _e('Use textarea?'); ?></label></th>
+										<th scope="row"><label class="description" for="sac_options[sac_use_textarea]"><?php _e('Use textarea?', 'sac'); ?></label></th>
 										<td><input type="checkbox" name="sac_options[sac_use_textarea]" value="1" <?php if (isset($sac_options['sac_use_textarea'])) { checked('1', $sac_options['sac_use_textarea']); } ?> /> 
-										<span class="mm-item-caption"><?php _e('Check this box to use a larger input field for chat messages.'); ?></span></td>
+										<span class="mm-item-caption"><?php _e('Check this box to use a larger input field for chat messages.', 'sac'); ?></span></td>
 									</tr>
 									<tr>
-										<th scope="row"><label class="description" for="sac_options[sac_default_handle]"><?php _e('Default name'); ?></label></th>
+										<th scope="row"><label class="description" for="sac_options[sac_default_handle]"><?php _e('Default name', 'sac'); ?></label></th>
 										<td>
 											<input type="text" size="50" maxlength="200" name="sac_options[sac_default_handle]" value="<?php echo $sac_options['sac_default_handle']; ?>" />
-											<div class="mm-item-caption"><?php _e('Here you may customize the name of the username for the &ldquo;welcome&rdquo; message. Note: reset/clear the chat messages for the new name to be displayed.'); ?></div>
+											<div class="mm-item-caption"><?php _e('Here you may customize the name of the username for the &ldquo;welcome&rdquo; message. Note: reset/clear the chat messages for the new name to be displayed.', 'sac'); ?></div>
 										</td>
 									</tr>
 									<tr>
-										<th scope="row"><label class="description" for="sac_options[sac_default_message]"><?php _e('Default message'); ?></label></th>
+										<th scope="row"><label class="description" for="sac_options[sac_default_message]"><?php _e('Default message', 'sac'); ?></label></th>
 										<td>
 											<input type="text" size="50" maxlength="200" name="sac_options[sac_default_message]" value="<?php echo $sac_options['sac_default_message']; ?>" />
-											<div class="mm-item-caption"><?php _e('Here you may customize the &ldquo;welcome&rdquo; message that appears as the first chat comment. Note: reset/clear the chat messages for the new welcome message to be displayed.'); ?></div>
+											<div class="mm-item-caption"><?php _e('Here you may customize the &ldquo;welcome&rdquo; message that appears as the first chat comment. Note: reset/clear the chat messages for the new welcome message to be displayed.', 'sac'); ?></div>
 										</td>
 									</tr>
 									<tr>
-										<th scope="row"><label class="description" for="sac_options[sac_play_sound]"><?php _e('Sound alerts?'); ?></label></th>
+										<th scope="row"><label class="description" for="sac_options[sac_play_sound]"><?php _e('Sound alerts?', 'sac'); ?></label></th>
 										<td><input type="checkbox" name="sac_options[sac_play_sound]" value="1" <?php if (isset($sac_options['sac_play_sound'])) { checked('1', $sac_options['sac_play_sound']); } ?> /> 
-										<span class="mm-item-caption"><?php _e('Check this box if you want to hear a sound for new chat messages. Tip: to change the sound file, replace the file "msg.mp3" with any (short) mp3 file.'); ?></span></td>
+										<span class="mm-item-caption"><?php _e('Check this box if you want to hear a sound for new chat messages. Tip: to change the sound file, replace the file "msg.mp3" with any (short) mp3 file.', 'sac'); ?></span></td>
 									</tr>
 								</table>
 							</div>
-							<h4><?php _e('Times and colors'); ?></h4>
+							<h4><?php _e('Times and colors', 'sac'); ?></h4>
 							<div class="mm-table-wrap">
 								<table class="widefat mm-table">
 									<tr>
-										<th scope="row"><label class="description" for="sac_options[sac_update_seconds]"><?php _e('Update interval'); ?></label></th>
+										<th scope="row"><label class="description" for="sac_options[sac_update_seconds]"><?php _e('Update interval', 'sac'); ?></label></th>
 										<td>
 											<input type="text" size="5" maxlength="10" name="sac_options[sac_update_seconds]" value="<?php echo $sac_options['sac_update_seconds']; ?>" />
 											<div class="mm-item-caption">
 												<?php _e('Indicate the refresh frequency (in milliseconds, decimals allowed). Smaller numbers make new chat messages appear faster, but also increase server load.
 													This number is used as the interval for the first eight Ajax requests; after that, the number is automatically increased. Adding a new comment or 
-													mousing over the chat box will reset the interval to the number specified here. The default is 3 seconds (3000 ms).'); ?>
+													mousing over the chat box will reset the interval to the number specified here. The default is 3 seconds (3000 ms).', 'sac'); ?>
 											</div>
 										</td>
 									</tr>
 									<tr>
-										<th scope="row"><label class="description" for="sac_options[sac_fade_length]"><?php _e('Fade duration'); ?></label></th>
+										<th scope="row"><label class="description" for="sac_options[sac_fade_length]"><?php _e('Fade duration', 'sac'); ?></label></th>
 										<td>
 											<input type="text" size="5" maxlength="10" name="sac_options[sac_fade_length]" value="<?php echo $sac_options['sac_fade_length']; ?>" />
-											<div class="mm-item-caption"><?php _e('This number specifies the fade-duration of the most recent chat message (in milliseconds, decimals allowed). Default is 1.5 seconds (1500 ms).'); ?></div>
+											<div class="mm-item-caption"><?php _e('This number specifies the fade-duration of the most recent chat message (in milliseconds, decimals allowed). Default is 1.5 seconds (1500 ms).', 'sac'); ?></div>
 										</td>
 									</tr>
 									<tr>
-										<th scope="row"><label class="description" for="sac_options[sac_fade_from]"><?php _e('Highlight fade (from)'); ?></label></th>
+										<th scope="row"><label class="description" for="sac_options[sac_fade_from]"><?php _e('Highlight fade (from)', 'sac'); ?></label></th>
 										<td>
 											<input type="text" size="50" maxlength="200" name="sac_options[sac_fade_from]" value="<?php echo $sac_options['sac_fade_from']; ?>" />
-											<div class="mm-item-caption"><?php _e('Here you may customize the &ldquo;fade-in&rdquo; background-color of new chat messages. Note: colors must be 6-digit-hex format, default color is <code>#ffffcc</code>.'); ?></div>
+											<div class="mm-item-caption"><?php _e('Here you may customize the &ldquo;fade-in&rdquo; background-color of new chat messages. Note: colors must be 6-digit-hex format, default color is <code>#ffffcc</code>.', 'sac'); ?></div>
 										</td>
 									</tr>
 									<tr>
-										<th scope="row"><label class="description" for="sac_options[sac_fade_to]"><?php _e('Highlight fade (to)'); ?></label></th>
+										<th scope="row"><label class="description" for="sac_options[sac_fade_to]"><?php _e('Highlight fade (to)', 'sac'); ?></label></th>
 										<td>
 											<input type="text" size="50" maxlength="200" name="sac_options[sac_fade_to]" value="<?php echo $sac_options['sac_fade_to']; ?>" />
-											<div class="mm-item-caption"><?php _e('Here you may customize the &ldquo;fade-out&rdquo; background-color of new chat messages. Note: colors must be 6-digit-hex format, default color is <code>#ffffff</code>.'); ?></div>
+											<div class="mm-item-caption"><?php _e('Here you may customize the &ldquo;fade-out&rdquo; background-color of new chat messages. Note: colors must be 6-digit-hex format, default color is <code>#ffffff</code>.', 'sac'); ?></div>
 										</td>
 									</tr>
 								</table>
 							</div>
-							<h4><?php _e('Appearance'); ?></h4>
+							<h4><?php _e('Appearance', 'sac'); ?></h4>
 							<div class="mm-table-wrap">
 								<table class="widefat mm-table">
 									<tr>
-										<th scope="row"><label class="description" for="sac_options[sac_custom_styles]"><?php _e('Custom CSS styles'); ?></label></th>
+										<th scope="row"><label class="description" for="sac_options[sac_custom_styles]"><?php _e('Custom CSS styles', 'sac'); ?></label></th>
 										<td><textarea class="textarea" rows="5" cols="50" name="sac_options[sac_custom_styles]"><?php echo esc_textarea($sac_options['sac_custom_styles']); ?></textarea>
-										<div class="mm-item-caption"><?php _e('Here you may add custom CSS to style the chat form. Do not include <code>&lt;style&gt;</code> tags. Note: view <code>/resources/sac.css</code> for a complete set of available CSS hooks.'); ?></div></td>
+										<div class="mm-item-caption"><?php _e('Here you may add custom CSS to style the chat form. Do not include <code>&lt;style&gt;</code> tags. Note: view <code>/resources/sac.css</code> for a complete set of available CSS hooks.', 'sac'); ?></div></td>
 									</tr>
 									<tr>
-										<th scope="row"><label class="description" for="sac_options[sac_enable_style]"><?php _e('Enable custom styles?'); ?></label></th>
+										<th scope="row"><label class="description" for="sac_options[sac_enable_style]"><?php _e('Enable custom styles?', 'sac'); ?></label></th>
 										<td><input type="checkbox" name="sac_options[sac_enable_style]" value="1" <?php if (isset($sac_options['sac_enable_style'])) { checked('1', $sac_options['sac_enable_style']); } ?> /> 
-										<span class="mm-item-caption"><?php _e('Check this box if you want to enable the CSS styles.'); ?></span></td>
+										<span class="mm-item-caption"><?php _e('Check this box if you want to enable the CSS styles.', 'sac'); ?></span></td>
 									</tr>
 								</table>
 							</div>
-							<h4><?php _e('Targeted loading'); ?></h4>
+							<h4><?php _e('Targeted loading', 'sac'); ?></h4>
 							<div class="mm-table-wrap">
 								<table class="widefat mm-table">
 									<tr>
-										<th scope="row"><label class="description" for="sac_options[sac_script_url]"><?php _e('Chat URL'); ?></label></th>
+										<th scope="row"><label class="description" for="sac_options[sac_script_url]"><?php _e('Chat URL', 'sac'); ?></label></th>
 										<td>
 											<input type="text" size="50" maxlength="200" name="sac_options[sac_script_url]" value="<?php echo $sac_options['sac_script_url']; ?>" />
-											<div class="mm-item-caption"><?php _e('By default, the plugin includes its JavaScript on <em>every</em> page. To prevent this, and to include its JavaScript only on the chat page, enter the URL where it&rsquo;s displayed. Note: leave blank to disable.'); ?></div>
+											<div class="mm-item-caption"><?php _e('By default, the plugin includes its JavaScript on <em>every</em> page. To prevent this, and to include its JavaScript only on the chat page, enter the URL where it&rsquo;s displayed. Note: leave blank to disable.', 'sac'); ?></div>
 										</td>
 									</tr>
 								</table>
 							</div>
-							<h4><?php _e('Custom content'); ?></h4>
+							<h4><?php _e('Custom content', 'sac'); ?></h4>
 							<div class="mm-table-wrap">
 								<table class="widefat mm-table">
 									<tr>
-										<th scope="row"><label class="description" for="sac_options[sac_content_chat]"><?php _e('Custom content before chat box'); ?></label></th>
+										<th scope="row"><label class="description" for="sac_options[sac_content_chat]"><?php _e('Custom content before chat box', 'sac'); ?></label></th>
 										<td><textarea class="textarea" rows="3" cols="50" name="sac_options[sac_content_chat]"><?php echo esc_textarea($sac_options['sac_content_chat']); ?></textarea>
-										<div class="mm-item-caption"><?php _e('Here you may specify any custom text/markup that will appear <strong>before</strong> the chat box. Note: leave blank to disable.'); ?></div></td>
+										<div class="mm-item-caption"><?php _e('Here you may specify any custom text/markup that will appear <strong>before</strong> the chat box. Note: leave blank to disable.', 'sac'); ?></div></td>
 									</tr>
 									<tr>
-										<th scope="row"><label class="description" for="sac_options[sac_chat_append]"><?php _e('Custom content after chat box'); ?></label></th>
+										<th scope="row"><label class="description" for="sac_options[sac_chat_append]"><?php _e('Custom content after chat box', 'sac'); ?></label></th>
 										<td><textarea class="textarea" rows="3" cols="50" name="sac_options[sac_chat_append]"><?php echo esc_textarea($sac_options['sac_chat_append']); ?></textarea>
-										<div class="mm-item-caption"><?php _e('Here you may specify any custom text/markup that will appear <strong>after</strong> the chat box. Note: leave blank to disable.'); ?></div></td>
+										<div class="mm-item-caption"><?php _e('Here you may specify any custom text/markup that will appear <strong>after</strong> the chat box. Note: leave blank to disable.', 'sac'); ?></div></td>
 									</tr>
 									<tr>
-										<th scope="row"><label class="description" for="sac_options[sac_content_form]"><?php _e('Custom content before chat form'); ?></label></th>
+										<th scope="row"><label class="description" for="sac_options[sac_content_form]"><?php _e('Custom content before chat form', 'sac'); ?></label></th>
 										<td><textarea class="textarea" rows="3" cols="50" name="sac_options[sac_content_form]"><?php echo esc_textarea($sac_options['sac_content_form']); ?></textarea>
-										<div class="mm-item-caption"><?php _e('Here you may specify any custom text/markup that will appear <strong>before</strong> the chat form.  Note: leave blank to disable.'); ?></div></td>
+										<div class="mm-item-caption"><?php _e('Here you may specify any custom text/markup that will appear <strong>before</strong> the chat form.  Note: leave blank to disable.', 'sac'); ?></div></td>
 									</tr>
 									<tr>
-										<th scope="row"><label class="description" for="sac_options[sac_form_append]"><?php _e('Custom content after chat form'); ?></label></th>
+										<th scope="row"><label class="description" for="sac_options[sac_form_append]"><?php _e('Custom content after chat form', 'sac'); ?></label></th>
 										<td><textarea class="textarea" rows="3" cols="50" name="sac_options[sac_form_append]"><?php echo esc_textarea($sac_options['sac_form_append']); ?></textarea>
-										<div class="mm-item-caption"><?php _e('Here you may specify any custom text/markup that will appear <strong>after</strong> the chat form.  Note: leave blank to disable.'); ?></div></td>
+										<div class="mm-item-caption"><?php _e('Here you may specify any custom text/markup that will appear <strong>after</strong> the chat form.  Note: leave blank to disable.', 'sac'); ?></div></td>
 									</tr>
 								</table>
 							</div>
-							<input type="submit" class="button-primary" value="<?php _e('Save Settings'); ?>" />
+							<input type="submit" class="button-primary" value="<?php _e('Save Settings', 'sac'); ?>" />
 						</form>
 					</div>
 				</div>
 
 				<div id="mm-panel-secondary" class="postbox">
-					<h3><?php _e('Template Tag &amp; Shortcode'); ?></h3>
+					<h3><?php _e('Template Tag &amp; Shortcode', 'sac'); ?></h3>
 					<div class="toggle default-hidden">
-						<h4><?php _e('Shortcode'); ?></h4>
-						<p><?php _e('Use this shortcode to display the chat box on a post or page:'); ?></p>
+						<h4><?php _e('Shortcode', 'sac'); ?></h4>
+						<p><?php _e('Use this shortcode to display the chat box on a post or page:', 'sac'); ?></p>
 						<p><code class="mm-code">[sac_happens]</code></p>
-						<h4><?php _e('Template tag'); ?></h4>
-						<p><?php _e('Use this template tag to display the chat box anywhere in your theme template:'); ?></p>
+						<h4><?php _e('Template tag', 'sac'); ?></h4>
+						<p><?php _e('Use this template tag to display the chat box anywhere in your theme template:', 'sac'); ?></p>
 						<p><code class="mm-code">&lt;?php if (function_exists('simple_ajax_chat')) simple_ajax_chat(); ?&gt;</code></p>
 					</div>
 				</div>
 
 				<div id="mm-panel-tertiary" class="postbox">
-					<h3><?php _e('Manage Chat Messages'); ?></h3>
+					<h3><?php _e('Manage Chat Messages', 'sac'); ?></h3>
 						
 					<?php if (isset($_GET["sac_delete"]) || isset($_GET["sac_edit"]) || isset($_GET["sac_truncate_success"])) {
 						$sac_updated_message = true;
@@ -415,15 +415,15 @@ function sac_render_form() {
 					} ?>
 					<div class="toggle<?php if (!$sac_updated_message) { echo ' default-hidden'; } ?>">
 						<p>
-							<?php _e('Here is a <em>static</em> list of all chat messages for editing and/or deleting. Note that you must have at least <strong>one message</strong> in the chat box at all times.'); ?> 
-							<?php _e('Clicking &ldquo;Delete all chat messages&rdquo; will clear the database and add your default message to make it all good.'); ?>
+							<?php _e('Here is a <em>static</em> list of all chat messages for editing and/or deleting. Note that you must have at least <strong>one message</strong> in the chat box at all times.', 'sac'); ?> 
+							<?php _e('Clicking &ldquo;Delete all chat messages&rdquo; will clear the database and add your default message to make it all good.', 'sac'); ?>
 						</p>
 						<h4><?php echo $chat_report; ?></h4>
 						<div class="mm-table-wrap">
 
 							<?php if (empty($chats)) { ?>
 
-								<p><strong>You must have at least one message in the chat box at all times! Go post a few chat messages and try again.</strong></p>
+								<p><strong><?php _e('You must have at least one message in the chat box at all times! Go post a few chat messages and try again.', 'sac'); ?></strong></p>
 
 							<?php } else {
  
@@ -433,7 +433,7 @@ function sac_render_form() {
 										$url = (empty($chat->url) && $chat->url = "http://") ? $chat->name : '<a href="' . $chat->url . '">' . $chat->name . '</a>';
 										if ($sac_first_time == "yes") { ?>
 
-										<div><span>Last Message</span> <em><?php echo sac_time_since($chat->time); ?> ago</em></div>
+										<div><span><?php _e('Last Message', 'sac'); ?></span> <em><?php echo sac_time_since($chat->time); ?> <?php _e('ago', 'sac'); ?></em></div>
 										<ul id="mm-chat-list">
 										<?php } ?>
 
@@ -461,7 +461,7 @@ function sac_render_form() {
 				</div>
 
 				<div id="mm-panel-quaternary" class="postbox">
-					<h3><?php _e('Banned Phrases'); ?></h3>
+					<h3><?php _e('Banned Phrases', 'sac'); ?></h3>
 
 					<?php if (isset($_GET["settings-updated"]) || isset($_GET["sac_restore_success"])) {
 						$sac_updated_list = true;
@@ -469,35 +469,35 @@ function sac_render_form() {
 						$sac_updated_list = false;
 					} ?>
 					<div class="toggle<?php if (!$sac_updated_list) { echo ' default-hidden'; } ?>">
-						<p><?php _e('Here you may specify a list of words that should be banned from the chat room. Separate words with commas. Note: this applies to usernames, URLs, and chat messages.'); ?></p>
+						<p><?php _e('Here you may specify a list of words that should be banned from the chat room. Separate words with commas. Note: this applies to usernames, URLs, and chat messages.', 'sac'); ?></p>
 						<form method="post" action="options.php">
 							<?php $sac_censors = get_option('sac_censors'); settings_fields('sac_plugin_options_censors'); ?>
 							<div class="mm-table-wrap">
 								<table class="widefat mm-table">
 									<tr>
-										<th scope="row"><label class="description" for="sac_censors"><?php _e('Banned phrases'); ?></label></th>
+										<th scope="row"><label class="description" for="sac_censors"><?php _e('Banned phrases', 'sac'); ?></label></th>
 										<td><textarea class="textarea" rows="3" cols="50" name="sac_censors"><?php echo esc_textarea($sac_censors); ?></textarea></td>
 									</tr>
 								</table>
 							</div>
-							<input type="submit" class="button-primary" value="<?php _e('Save Settings'); ?>" />
+							<input type="submit" class="button-primary" value="<?php _e('Save Settings', 'sac'); ?>" />
 						</form>
 					</div>
 				</div>
 
 				<div id="mm-restore-settings" class="postbox">
-					<h3><?php _e('Restore Default Options'); ?></h3>
+					<h3><?php _e('Restore Default Options', 'sac'); ?></h3>
 					<div class="toggle default-hidden">
-						<p><?php _e('Click the button to restore plugin options to their default setttings.'); ?></p>
+						<p><?php _e('Click the button to restore plugin options to their default setttings.', 'sac'); ?></p>
 						<form method="post" action="options.php">
-							<input type="submit" class="button-primary" id="mm_restore_defaults" value="<?php _e('Restore default settings'); ?>" />
+							<input type="submit" class="button-primary" id="mm_restore_defaults" value="<?php _e('Restore default settings', 'sac'); ?>" />
 							<input type="hidden" name="sac_restore" value="Reset" /> 
 						</form>
 					</div>
 				</div>
 
 				<div id="mm-panel-current" class="postbox">
-					<h3><?php _e('Updates &amp; Info'); ?></h3>
+					<h3><?php _e('Updates &amp; Info', 'sac'); ?></h3>
 					<div class="toggle">
 						<div id="mm-iframe-wrap">
 							<iframe src="http://perishablepress.com/current/index-sac.html"></iframe>
@@ -547,7 +547,7 @@ function sac_render_form() {
 			});
 			// prevent accidents
 			jQuery("#mm_truncate_all").click(function(){
-				var r = confirm("<?php _e('Are you sure you want to delete alll chat messages? (this action cannot be undone)'); ?>");
+				var r = confirm("<?php _e('Are you sure you want to delete alll chat messages? (this action cannot be undone)', 'sac'); ?>");
 				if (r == true){
 					return true;
 				} else {
@@ -555,7 +555,7 @@ function sac_render_form() {
 				}
 			});
 			jQuery("#mm_restore_defaults").click(function(){
-				var r = confirm("<?php _e('Are you sure you want to restore default settings? (this action cannot be undone)'); ?>");
+				var r = confirm("<?php _e('Are you sure you want to restore default settings? (this action cannot be undone)', 'sac'); ?>");
 				if (r == true){
 					return true;
 				} else {

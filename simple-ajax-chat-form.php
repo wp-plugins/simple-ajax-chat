@@ -50,7 +50,7 @@ function simple_ajax_chat() {
 					$r->text = preg_replace("`(http|ftp)+(s)?:(//)((\w|\.|\-|_)+)(/)?(\S+)?`i", "<a href=\"\\0\" target=\"_blank\" title=\"Open link in new tab\">\\0\</a>", $r->text);
 					if ($sac_first_time == true) { ?>
 
-						<div id="sac-latest-message"><span><?php _e("Latest Message:"); ?></span> <em id="responseTime"><?php echo sac_time_since($r->time); ?> ago</em></div>
+						<div id="sac-latest-message"><span><?php _e('Latest Message:', 'sac'); ?></span> <em id="responseTime"><?php echo sac_time_since($r->time); ?> ago</em></div>
 						<ul id="sac-messages">
 
 					<?php }
@@ -79,12 +79,12 @@ function simple_ajax_chat() {
 			echo $custom_form_pre; ?>
 
 		<div id="sac-panel">
-			<form id="sac-form" method="post" action="<?php bloginfo('wpurl'); ?>/wp-content/plugins/<?php echo $sac_path; ?>">
+			<form id="sac-form" method="post" action="<?php echo site_url(); ?>/wp-content/plugins/<?php echo $sac_path; ?>">
 
 				<?php if (!empty($user_nickname)) { ?>
 
 				<fieldset id="sac-user-info">
-					<label for="sac_name"><?php _e('Name'); ?>: <span><?php echo $user_nickname ?></span></label>
+					<label for="sac_name"><?php _e('Name', 'sac'); ?>: <span><?php echo $user_nickname ?></span></label>
 					<input type="hidden" name="sac_name" id="sac_name" value="<?php echo $user_nickname; ?>" />
 					<input type="hidden" name="sac_url" id="sac_url" value="<?php if($use_url) { echo $user_url; } ?>" />
 				</fieldset>
@@ -92,20 +92,20 @@ function simple_ajax_chat() {
 				<?php } else { ?>
 
 				<fieldset id="sac-user-info">
-					<label for="sac_name"><?php _e('Name'); ?>:</label>
+					<label for="sac_name"><?php _e('Name', 'sac'); ?>:</label>
 					<input type="text" name="sac_name" id="sac_name" value="<?php if ($_COOKIE['sacUserName']) { echo $_COOKIE['sacUserName']; } ?>" placeholder="Name" />
 				</fieldset>
 
 				<?php } if (!$use_url) { echo '<div style="display:none;">'; } ?>
 
 				<fieldset id="sac-user-url">
-					<label for="sac_url"><?php _e('URL'); ?>:</label>
+					<label for="sac_url"><?php _e('URL', 'sac'); ?>:</label>
 					<input type="text" name="sac_url" id="sac_url" value="<?php if ($_COOKIE['sacUrl']) { echo $_COOKIE['sacUrl']; } else { echo 'http://'; } ?>" placeholder="URL" />
 				</fieldset>
 				<?php if (!$use_url) { echo '</div>'; } ?>
 
 				<fieldset id="sac-user-chat">
-					<label for="sac_chat"><?php _e('Message') ?>:</label>
+					<label for="sac_chat"><?php _e('Message', 'sac') ?>:</label>
 
 				<?php if ($use_textarea) { ?>
 
@@ -123,7 +123,7 @@ function simple_ajax_chat() {
 					<input name="sac_verify" type="text" size="33" maxlength="99" value="" />
 				</fieldset>
 				<div id="sac-user-submit">
-					<input type="submit" id="submitchat" name="submit" class="submit" value="<?php _e('Say it'); ?>" />
+					<input type="submit" id="submitchat" name="submit" class="submit" value="<?php _e('Say it', 'sac'); ?>" />
 					<input type="hidden" id="sac_lastID" value="<?php echo $lastID + 1; ?>" name="sac_lastID" />
 					<input type="hidden" name="sac_no_js" value="true" />
 					<input type="hidden" name="PHPSESSID" value="<?php echo session_id(); ?>" />
@@ -136,7 +136,7 @@ function simple_ajax_chat() {
 		<?php echo $custom_form_app; ?>
 
 		<?php if ($play_sound == true) { 
-			$res_path = get_bloginfo('wpurl') . '/wp-content/plugins/simple-ajax-chat/resources/'; ?>
+			$res_path = site_url() . '/wp-content/plugins/simple-ajax-chat/resources/'; ?>
 			<audio id="TheBox">
 				<source src="<?php echo $res_path; ?>msg.mp3"></source>
 				<source src="<?php echo $res_path; ?>msg.ogg"></source>
