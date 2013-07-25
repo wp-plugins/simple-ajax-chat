@@ -1,5 +1,7 @@
 <?php // Simple Ajax Chat > Settings
 
+if (!function_exists('add_action')) die('&Delta;');
+
 // add default settings
 function sac_add_defaults() {
 	$tmp = get_option('sac_options');
@@ -33,7 +35,7 @@ function sac_add_defaults() {
 }
 if (function_exists('register_activation_hook')) register_activation_hook(plugin_dir_path(__FILE__).'simple-ajax-chat-core.php', 'sac_add_defaults');
 
-// delete plugin settings
+// reset plugin settings
 if (isset($_POST['sac_restore'])) {
 	$sac_default_censors = 'firstbannedword,secondbannedword,thirdbannedword';
 	$sac_default_options = array(

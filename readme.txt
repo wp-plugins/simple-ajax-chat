@@ -9,7 +9,7 @@ Contributors: specialk
 Donate link: http://m0n.co/donate
 Requires at least: 3.4
 Tested up to: 3.5
-Version: 20130713
+Version: 20130725
 Stable tag: trunk
 License: GPL v2 or later
 Usage: Visit the plugin's settings page for shortcodes, template tags, and more information.
@@ -115,10 +115,17 @@ Live Demo available at [WP-Mix](http://wp-mix.com/chat/).
 
 == Changelog ==
 
+= 20130725 =
+
+* Tightened form security
+* Tightened plugin security
+* Updated deprecated functions
+* Resolved some PHP Notices
+
 = 20130713 =
 
 * Improved localization support
-* Replaced some deprectaed template tags
+* Replaced some deprecated template tags
 
 = 20130712 =
 

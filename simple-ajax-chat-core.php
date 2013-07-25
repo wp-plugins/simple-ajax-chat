@@ -6,7 +6,8 @@
 	Author: Jeff Starr
 	Author URI: http://monzilla.biz/
 	Donate link: http://m0n.co/donate
-	Version: 20130713
+	Version: 20130725
+	Stable tag: trunk
 	License: GPL v2
 	Usage: Visit the plugin's settings page for shortcodes, template tags, and more information.
 	Tags: chat, box, ajax, forum
@@ -14,7 +15,9 @@
 
 // NO EDITING REQUIRED - PLEASE SET PREFERENCES IN THE WP ADMIN!
 
-$sac_version = '20130713';
+if (!function_exists('add_action')) die('&Delta;');
+
+$sac_version = '20130725';
 $sac_plugin  = 'Simple Ajax Chat';
 $sac_path    = 'simple-ajax-chat/simple-ajax-chat-admin.php';
 $sac_homeurl = 'http://perishablepress.com/simple-ajax-chat/';
@@ -72,7 +75,7 @@ function sac_create_table() {
 	if (!in_array($table_prefix . "ajax_chat", $tables)) {
 		$first_install = "yes";
 	}
-	require_once(ABSPATH . 'wp-admin/upgrade-functions.php');
+	require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 	dbDelta("CREATE TABLE " . $table_prefix . "ajax_chat (
 		id mediumint(7) NOT NULL AUTO_INCREMENT, 
 		time bigint(11) DEFAULT '0' NOT NULL, 
@@ -211,15 +214,17 @@ function sac_getData($sac_lastID) {
 	$query = $wpdb->get_results("SELECT * FROM " . $table_prefix . "ajax_chat WHERE id > " . $sac_lastID . " ORDER BY id DESC", ARRAY_A);
 	$loop = '';
 	for ($row = 0; $row < 1; $row++) {
-		if (!is_null($query[$row]) && is_array($query[$row])) { 
-			while (list($key, $value) = each($query[$row])) {
-
-				$id   = $query[$row]['id'];
-				$time = $query[$row]['time'];
-				$name = $query[$row]['name'];
-				$text = $query[$row]['text'];
-				$url  = $query[$row]['url'];
-				$loop = $id  ."---" . $name . "---" . $text . "---" . sac_time_since($time) . " ago---" . $url . "---";
+		if (isset($query[$row])){
+			if (!is_null($query[$row]) && is_array($query[$row])) { 
+				while (list($key, $value) = each($query[$row])) {
+	
+					$id   = $query[$row]['id'];
+					$time = $query[$row]['time'];
+					$name = $query[$row]['name'];
+					$text = $query[$row]['text'];
+					$url  = $query[$row]['url'];
+					$loop = $id  ."---" . $name . "---" . $text . "---" . sac_time_since($time) . " ago---" . $url . "---";
+				}
 			}
 		}
 	}

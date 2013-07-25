@@ -4,6 +4,7 @@
 define('WP_USE_THEMES', false);
 require('../../../wp-blog-header.php');
 $sac_options = get_option('sac_options');
+if (!function_exists('add_action')) die('&Delta;');
 
 //$wpdb->show_errors();
 $wpdb->hide_errors();

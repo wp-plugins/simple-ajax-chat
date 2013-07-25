@@ -139,7 +139,7 @@ function make_links(s){
 function filter_smilies(s){
 	for (var i = 0; i < smilies.length; i++){
 		var search = smilies[i][0];
-		var replace = '<img src="<?php bloginfo('wpurl'); ?>/wp-includes/images/smilies/' + smilies[i][1] + '" class="wp-smiley" alt="' + smilies[i][0].replace(/\\/g, '') + '" />';
+		var replace = '<img src="<?php echo site_url(); ?>/wp-includes/images/smilies/' + smilies[i][1] + '" class="wp-smiley" alt="' + smilies[i][0].replace(/\\/g, '') + '" />';
 		re = new RegExp(search, 'gi');
 		s = s.replace(re, replace);
 	}

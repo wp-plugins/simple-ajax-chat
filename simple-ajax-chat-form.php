@@ -1,5 +1,7 @@
 <?php // Simple Ajax Chat > Chat Form
 
+if (!function_exists('add_action')) die('&Delta;');
+
 session_start();
 //$_SESSION['user_token'] = uniqid();
 
@@ -93,14 +95,14 @@ function simple_ajax_chat() {
 
 				<fieldset id="sac-user-info">
 					<label for="sac_name"><?php _e('Name', 'sac'); ?>:</label>
-					<input type="text" name="sac_name" id="sac_name" value="<?php if ($_COOKIE['sacUserName']) { echo $_COOKIE['sacUserName']; } ?>" placeholder="Name" />
+					<input type="text" name="sac_name" id="sac_name" value="<?php if ($_COOKIE['sacUserName']) { echo htmlentities($_COOKIE['sacUserName']); } ?>" placeholder="Name" />
 				</fieldset>
 
 				<?php } if (!$use_url) { echo '<div style="display:none;">'; } ?>
 
 				<fieldset id="sac-user-url">
 					<label for="sac_url"><?php _e('URL', 'sac'); ?>:</label>
-					<input type="text" name="sac_url" id="sac_url" value="<?php if ($_COOKIE['sacUrl']) { echo $_COOKIE['sacUrl']; } else { echo 'http://'; } ?>" placeholder="URL" />
+					<input type="text" name="sac_url" id="sac_url" value="<?php if ($_COOKIE['sacUrl']) { echo htmlentities($_COOKIE['sacUrl']); } else { echo 'http://'; } ?>" placeholder="URL" />
 				</fieldset>
 				<?php if (!$use_url) { echo '</div>'; } ?>
 
