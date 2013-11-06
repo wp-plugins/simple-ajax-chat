@@ -8,8 +8,8 @@ Author URI: http://monzilla.biz/
 Contributors: specialk
 Donate link: http://m0n.co/donate
 Requires at least: 3.4
-Tested up to: 3.5
-Version: 20130725
+Tested up to: 3.7
+Version: 20131105
 Stable tag: trunk
 License: GPL v2 or later
 Usage: Visit the plugin's settings page for shortcodes, template tags, and more information.
@@ -25,6 +25,7 @@ Simple Ajax Chat makes it easy for your visitors to chat with each other on your
 
 * NEW: strong anti-spam filters
 * Plug-n-play functionality
+* Designed to be the simplest possible *persistent* chat
 * No configuration required, just include shortcode or template tag
 * Display on any post or page with the shortcode
 * Display anywhere in your theme template with the template tag
@@ -41,6 +42,7 @@ Simple Ajax Chat makes it easy for your visitors to chat with each other on your
 * On-demand restoration of all default settings
 * Super-slick toggling settings page
 * Option to play sound alert for chat messages
+* Timestamp for each chat message
 
 **Customize everything**
 
@@ -115,6 +117,25 @@ Live Demo available at [WP-Mix](http://wp-mix.com/chat/).
 
 == Changelog ==
 
+= 20131105 =
+
+* Removed 3x "&Delta;" from die() for better security
+* Added "rate this plugin" link on Plugins and SAC settings screens
+* Replaced 3x "wpdb->escape" with "esc_sql" in simple-ajax-chat-core.php
+* Filter server variables with built-in simple-ajax-chat-admin.php (lines 65/66)
+* Improved security when submitted chat fails (simple-ajax-chat.php)
+* Specified no border for smileys in filter_smilies()
+* Added localized timestamp of last chat to span.name in sac.php
+* Localized "ago" in sac-admin, sac-core, and sac-form
+* Localized sac_time_since() in simple-ajax-core.php
+* Improved header codes and WP includes in sac.php
+* Fixed bug where chats don't work if audio is disabled
+* Added uninstall.php to remove options and chat table upon uninstall
+* Enhanced functionality of plugin settings page
+* Tested with latest version of WordPress (3.7)
+* General code maintenance and cleanup
+* Added support for localization
+
 = 20130725 =
 
 * Tightened form security
@@ -172,6 +193,22 @@ Live Demo available at [WP-Mix](http://wp-mix.com/chat/).
 * Initial release.
 
 == Frequently Asked Questions ==
+
+Question: "Can we auto delete after some minutes all the chats?"
+
+Answer: Yes, please see this post: http://wp-mix.com/wordpress-cron-tips/
+
+Question: "I'm interested to know if your chat plugin has the option to respond to chats via an iPhone app or another chat software. I didn't see how the chats are received."
+
+Answer: Yep, the chat plugin works great on iPhones, Android devices, and more.. the functionality is achieved using Ajax.
+
+Question: "In some cases a backslash is added before a single apostrophe "`'`", how do I fix?"
+
+Answer: In the plugin settings, add a backslash "`\`" to the exclude list ("Banned Phrases" panel).
+
+Question: "How do I change the maximum number of characters/messages?"
+
+Answer: This is possible by editing the variables in `simple-ajax-core.php` (see "plugin variables"). Note: the planned "Pro" version of the plugin will include plugin settings for controlling these variables.
 
 To ask a question, visit the [SAC Homepage](http://perishablepress.com/simple-ajax-chat/) or [contact me](http://perishablepress.com/contact/).
 

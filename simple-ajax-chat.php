@@ -4,7 +4,7 @@
 define('WP_USE_THEMES', false);
 require('../../../wp-blog-header.php');
 $sac_options = get_option('sac_options');
-if (!function_exists('add_action')) die('&Delta;');
+if (!function_exists('add_action')) die();
 
 //$wpdb->show_errors();
 $wpdb->hide_errors();
@@ -70,18 +70,21 @@ if ((isset($sac_match)) && ($sac_match !== null) && ($sac_match !== 0) && ($sac_
 					if (isset($_POST['sac_name']) && isset($_POST['sac_chat'])) {
 						if ($_POST['sac_name'] != '' && $_POST['sac_chat'] != '') {
 							if (isset($_POST['sac_url'])) {
-								$sac_url = $_POST['sac_url'];
+								$sac_url = sac_clean($_POST['sac_url']);
 							} else {
 								$sac_url = '';
 							}
-							sac_addData($_POST['sac_name'], $_POST['sac_chat'], $sac_url);
+							$sac_name = sac_clean($_POST['sac_name']);
+							$sac_chat = sac_clean($_POST['sac_chat']);
+							$referrer = sac_clean($_SERVER['HTTP_REFERER']);
+							sac_addData($sac_name, $sac_chat, $sac_url);
 							sac_deleteOld();
-	
-							setcookie("sacUserName", $_POST['sac_name'], time()+60*60*24*30*3, '/');
-							setcookie("sacUrl", $sac_url, time()+60*60*24*30*3, '/');
-							header('location: ' . $_SERVER['HTTP_REFERER']);
+
+							setcookie("sacUserName", $sac_name, time() + 60 * 60 * 24 * 30 * 3, '/');
+							setcookie("sacUrl", $sac_url, time() + 60 * 60 * 24 * 30 * 3, '/');
+							header('location: ' . $referrer);
 						} else {
-							echo __('Name and comment required.', 'sac');
+							_e('Name and comment required.', 'sac');
 						}
 					}
 				}

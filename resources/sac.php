@@ -5,7 +5,10 @@
 	$ExpStr = "Expires: ".gmdate("D, d M Y H:i:s",time() + $offset)." GMT";
 	header($ExpStr);
 	header('Content-Type: application/x-javascript');
-	include("../../../../wp-config.php");
+
+	define('WP_USE_THEMES', false);
+	require('../../../../wp-blog-header.php');
+	$sac_options = get_option('sac_options'); 
 ?>
 // Simple Ajax Chat > JavaScript
 
@@ -139,7 +142,7 @@ function make_links(s){
 function filter_smilies(s){
 	for (var i = 0; i < smilies.length; i++){
 		var search = smilies[i][0];
-		var replace = '<img src="<?php echo site_url(); ?>/wp-includes/images/smilies/' + smilies[i][1] + '" class="wp-smiley" alt="' + smilies[i][0].replace(/\\/g, '') + '" />';
+		var replace = '<img src="<?php echo site_url(); ?>/wp-includes/images/smilies/' + smilies[i][1] + '" class="wp-smiley" border="0" style="border:none;" alt="' + smilies[i][0].replace(/\\/g, '') + '" />';
 		re = new RegExp(search, 'gi');
 		s = s.replace(re, replace);
 	}
@@ -166,7 +169,7 @@ if(typeof window.addEventListener != 'undefined'){
 // XHTML live Chat by Alexander Kohlhofer
 
 var sac_loadtimes;
-var sac_org_timeout = <?php $sac_options = get_option('sac_options'); echo $sac_options['sac_update_seconds']; ?>;
+var sac_org_timeout = <?php echo $sac_options['sac_update_seconds']; ?>;
 var sac_timeout = sac_org_timeout;
 var GetChaturl = "<?php echo plugins_url('simple-ajax-chat/simple-ajax-chat.php?sacGetChat=yes'); ?>";
 var SendChaturl = "<?php echo plugins_url('simple-ajax-chat/simple-ajax-chat.php?sacSendChat=yes'); ?>";
@@ -230,12 +233,23 @@ function insertNewContent(liName,liText,lastResponse, liUrl, liId){
 	insertO = document.getElementById("sac-messages");
 
 	var audio = document.getElementById("TheBox");
-	audio.play();
+	if (audio) audio.play();
 
 	oLi = document.createElement('li');
 	oLi.setAttribute('id','comment-new'+liId);
 	oSpan = document.createElement('span');
 	oSpan.setAttribute('class','name');
+	// date
+	Date.prototype.today = function() {
+		return this.getFullYear() + "/" + (((this.getMonth()+1) < 10)?"0":"") + (this.getMonth()+1) + "/" + ((this.getDate() < 10)?"0":"") + this.getDate();
+	};
+	// time
+	Date.prototype.timeNow = function() {
+		return ((this.getHours() < 10)?"0":"") + this.getHours() + ":" + ((this.getMinutes() < 10)?"0":"") + this.getMinutes() + ":" + ((this.getSeconds() < 10)?"0":"") + this.getSeconds();
+	};
+	var newDate = new Date();
+	var datetime = "<?php _e('Posted:', 'sac'); ?> " + newDate.today() + " @ " + newDate.timeNow();
+	oSpan.setAttribute('title', datetime);
 	oName = document.createTextNode(liName);
 	
 	<?php $use_url = $sac_options['sac_use_url']; if ($use_url) { ?>

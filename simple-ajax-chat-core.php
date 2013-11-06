@@ -6,7 +6,7 @@
 	Author: Jeff Starr
 	Author URI: http://monzilla.biz/
 	Donate link: http://m0n.co/donate
-	Version: 20130725
+	Version: 20131105
 	Stable tag: trunk
 	License: GPL v2
 	Usage: Visit the plugin's settings page for shortcodes, template tags, and more information.
@@ -15,9 +15,15 @@
 
 // NO EDITING REQUIRED - PLEASE SET PREFERENCES IN THE WP ADMIN!
 
-if (!function_exists('add_action')) die('&Delta;');
+if (!function_exists('add_action')) die();
 
-$sac_version = '20130725';
+// i18n
+function sac_i18n_init() {
+	load_plugin_textdomain('sac', false, dirname(plugin_basename(__FILE__)) . '/languages');
+}
+add_action('plugins_loaded', 'sac_i18n_init');
+
+$sac_version = '20131105';
 $sac_plugin  = 'Simple Ajax Chat';
 $sac_path    = 'simple-ajax-chat/simple-ajax-chat-admin.php';
 $sac_homeurl = 'http://perishablepress.com/simple-ajax-chat/';
@@ -63,6 +69,16 @@ function sac_plugin_action_links($links) {
 	return array_merge(array('settings'=>'<a href="' . site_url() . '/wp-admin/options-general.php?page=' . $sac_path . '">' . __('Settings', 'sac') .'</a>'), $links);
 }
 add_filter('plugin_action_links_'.plugin_basename(__FILE__), 'sac_plugin_action_links');
+
+// rate plugin link
+function add_plugin_links($links, $file) {
+	if ($file == plugin_basename(__FILE__)) {
+		$rate_url = 'http://wordpress.org/support/view/plugin-reviews/' . basename(dirname(__FILE__)) . '?rate=5#postform';
+		$links[] = '<a href="' . $rate_url . '" target="_blank" title="Click Here to Rate and Review this Plugin on WordPress.org">Rate This Plugin</a>';
+	}
+	return $links;
+}
+add_filter('plugin_row_meta', 'add_plugin_links', 10, 2);
 
 // install DB table
 function sac_create_table() {
@@ -165,12 +181,12 @@ function sac_get_ip_address() {
 // time since entry
 function sac_time_since($original) {
 	$chunks = array( // unix time (seconds)
-		array(60 * 60 * 24 * 365 , 'year'), 
-		array(60 * 60 * 24 * 30 , 'month'), 
-		array(60 * 60 * 24 * 7, 'week'), 
-		array(60 * 60 * 24 , 'day'), 
-		array(60 * 60 , 'hour'), 
-		array(60 , 'minute'), 
+		array(60 * 60 * 24 * 365 , __('year', 'sac')), 
+		array(60 * 60 * 24 * 30 ,  __('month', 'sac')), 
+		array(60 * 60 * 24 * 7,    __('week', 'sac')), 
+		array(60 * 60 * 24 ,       __('day', 'sac')), 
+		array(60 * 60 ,            __('hour', 'sac')), 
+		array(60 ,                 __('minute', 'sac')), 
 	);
 	$original = $original - 10; // fixes bug where $time & $original match
 	$today = time(); // current unix time
@@ -217,13 +233,12 @@ function sac_getData($sac_lastID) {
 		if (isset($query[$row])){
 			if (!is_null($query[$row]) && is_array($query[$row])) { 
 				while (list($key, $value) = each($query[$row])) {
-	
 					$id   = $query[$row]['id'];
 					$time = $query[$row]['time'];
 					$name = $query[$row]['name'];
 					$text = $query[$row]['text'];
 					$url  = $query[$row]['url'];
-					$loop = $id  ."---" . $name . "---" . $text . "---" . sac_time_since($time) . " ago---" . $url . "---";
+					$loop = $id . '---' . $name . '---' . $text . '---' . sac_time_since($time) . ' ' . __('ago', 'sac') . '---' . $url . '---';
 				}
 			}
 		}
@@ -241,7 +256,7 @@ function sac_shout_edit() {
 
 	} else {
 		if (isset($_GET['sac_comment_id'])) {
-			$wpdb->query($wpdb->prepare("UPDATE " . $table_prefix . "ajax_chat SET text = '" . $wpdb->escape($_GET['sac_text']) . "' WHERE id = %d", $wpdb->escape($_GET['sac_comment_id'])));
+			$wpdb->query($wpdb->prepare("UPDATE " . $table_prefix . "ajax_chat SET text = '" . esc_sql($_GET['sac_text']) . "' WHERE id = %d", esc_sql($_GET['sac_comment_id'])));
 			wp_redirect(admin_url('options-general.php?page=' . $sac_path . '&sac_edit=true'));
 		}
 	}
@@ -258,7 +273,7 @@ function sac_shout_delete() {
 
 	} else {
 		if (isset($_GET['sac_comment_id'])) {
-			$wpdb->query($wpdb->prepare("DELETE FROM " . $table_prefix . "ajax_chat WHERE id = %d", $wpdb->escape($_GET['sac_comment_id'])));
+			$wpdb->query($wpdb->prepare("DELETE FROM " . $table_prefix . "ajax_chat WHERE id = %d", esc_sql($_GET['sac_comment_id'])));
 			wp_redirect(admin_url('options-general.php?page=' . $sac_path . '&sac_delete=true'));
 		}
 	}

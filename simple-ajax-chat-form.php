@@ -1,6 +1,6 @@
 <?php // Simple Ajax Chat > Chat Form
 
-if (!function_exists('add_action')) die('&Delta;');
+if (!function_exists('add_action')) die();
 
 session_start();
 //$_SESSION['user_token'] = uniqid();
@@ -52,7 +52,7 @@ function simple_ajax_chat() {
 					$r->text = preg_replace("`(http|ftp)+(s)?:(//)((\w|\.|\-|_)+)(/)?(\S+)?`i", "<a href=\"\\0\" target=\"_blank\" title=\"Open link in new tab\">\\0\</a>", $r->text);
 					if ($sac_first_time == true) { ?>
 
-						<div id="sac-latest-message"><span><?php _e('Latest Message:', 'sac'); ?></span> <em id="responseTime"><?php echo sac_time_since($r->time); ?> ago</em></div>
+						<div id="sac-latest-message"><span><?php _e('Latest Message:', 'sac'); ?></span> <em id="responseTime"><?php echo sac_time_since($r->time) . ' ' . __('ago', 'sac'); ?></em></div>
 						<ul id="sac-messages">
 
 					<?php }
@@ -63,7 +63,7 @@ function simple_ajax_chat() {
 					} else {
 						$url = $r->name;
 					} ?>
-							<li><span title="Posted <?php echo sac_time_since($r->time); ?> ago"><?php echo stripslashes($url); ?> : </span> <?php echo convert_smilies(" " . stripslashes($r->text)); ?></li> 
+							<li><span title="Posted <?php echo sac_time_since($r->time) . ' ' . __('ago', 'sac'); ?>"><?php echo stripslashes($url); ?> : </span> <?php echo convert_smilies(" " . stripslashes($r->text)); ?></li> 
 
 					<?php $sac_first_time = false;
 				}

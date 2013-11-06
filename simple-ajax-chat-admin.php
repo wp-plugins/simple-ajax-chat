@@ -1,6 +1,6 @@
 <?php // Simple Ajax Chat > Settings
 
-if (!function_exists('add_action')) die('&Delta;');
+if (!function_exists('add_action')) die();
 
 // add default settings
 function sac_add_defaults() {
@@ -62,8 +62,8 @@ if (isset($_POST['sac_restore'])) {
 	);
 	update_option('sac_options', $sac_default_options);
 	update_option('sac_censors', $sac_default_censors);
-	$fixed_uri = str_replace("options.php", "options-general.php", $_SERVER["REQUEST_URI"]);
-	header("Location: http://" . $_SERVER["HTTP_HOST"] . $fixed_uri . "?page=" . $sac_path . "&sac_restore_success=true");
+	$fixed_uri = str_replace("options.php", "options-general.php", sac_clean($_SERVER["REQUEST_URI"]));
+	header("Location: http://" . sac_clean($_SERVER["HTTP_HOST"]) . $fixed_uri . "?page=" . $sac_path . "&sac_restore_success=true");
 }
 
 // whitelist settings
@@ -151,7 +151,7 @@ if (function_exists('add_action')) add_action('admin_menu', 'sac_add_options_pag
 function sac_render_form() {
 	global $wpdb, $sac_plugin, $sac_path, $sac_homeurl, $sac_version, $sac_number_of_comments; 
 	$chats = $wpdb->get_results($wpdb->prepare("SELECT * FROM " . $wpdb->prefix . "ajax_chat ORDER BY id DESC LIMIT %d", $sac_number_of_comments)); 
-
+	// $total = $wpdb->get_var($wpdb->prepare("SELECT id FROM " . $wpdb->prefix . "ajax_chat ORDER BY id DESC LIMIT 1")); // get message count (alt)
 	$chat_report = 'Currently there';
 	if (!empty($chats)) {
 		if (count($chats) == 1) { 
@@ -179,6 +179,7 @@ function sac_render_form() {
 		#mm-plugin-options ul { margin: 15px 15px 25px 40px; }
 		#mm-plugin-options li { margin: 10px 0; list-style-type: disc; }
 		#mm-plugin-options abbr { cursor: help; border-bottom: 1px dotted #dfdfdf; }
+		#mm-plugin-options hr { margin-left: 15px; margin-right: 15px; }
 
 		.mm-table-wrap { margin: 15px; }
 		.mm-table-wrap td { padding: 5px 10px; vertical-align: middle; }
@@ -223,6 +224,10 @@ function sac_render_form() {
 		<div id="setting-error-settings_updated" class="updated settings-error">
 			<p><strong><?php _e('Options successfully restored to default settings.', 'sac'); ?></strong></p>
 		</div>
+		<?php } if (isset($_GET["sac_delete_options"])) { ?>
+		<div id="setting-error-settings_updated" class="updated settings-error">
+			<p><strong><?php _e('Options saved. All plugin options will be removed upon uninstall.', 'sac'); ?></strong></p>
+		</div>
 		<?php } ?>
 
 		<div id="mm-panel-toggle"><a href="<?php get_admin_url() . 'options-general.php?page=' . $sac_path; ?>"><?php _e('Toggle all panels', 'sac'); ?></a></div>
@@ -244,6 +249,7 @@ function sac_render_form() {
 								<li><?php _e('To block a word or phrase from chat, visit', 'sac'); ?> <a id="mm-panel-quaternary-link" href="#mm-panel-quaternary"><?php _e('Banned Phrases', 'sac'); ?></a>.</li>
 								<li><?php _e('For more information check the', 'sac'); ?> <a href="<?php echo plugins_url(); ?>/simple-ajax-chat/readme.txt">readme.txt</a> 
 									<?php _e('and', 'sac'); ?> <a href="<?php echo $sac_homeurl; ?>"><?php _e('SAC Homepage', 'sac'); ?></a>.</li>
+								<li>If you like this plugin, please <a href="http://wordpress.org/support/view/plugin-reviews/<?php echo basename(dirname(__FILE__)); ?>?rate=5#postform" target="_blank" title="Click Here to Rate and Review this Plugin on WordPress.org">rate it at the Plugin Directory&nbsp;&raquo;</a></li>
 							</ul>
 						</div>
 					</div>
@@ -391,6 +397,9 @@ function sac_render_form() {
 								</table>
 							</div>
 							<input type="submit" class="button-primary" value="<?php _e('Save Settings', 'sac'); ?>" />
+							<!-- maybe use these in a future update -->
+							<input type="hidden" name="sac_options[sac_text_color]" value="#777777" />
+							<input type="hidden" name="sac_options[sac_name_color]" value="#333333" />
 						</form>
 					</div>
 				</div>
@@ -435,7 +444,7 @@ function sac_render_form() {
 										$url = (empty($chat->url) && $chat->url = "http://") ? $chat->name : '<a href="' . $chat->url . '">' . $chat->name . '</a>';
 										if ($sac_first_time == "yes") { ?>
 
-										<div><span><?php _e('Last Message', 'sac'); ?></span> <em><?php echo sac_time_since($chat->time); ?> <?php _e('ago', 'sac'); ?></em></div>
+										<div><span><?php _e('Last Message', 'sac'); ?></span> <em><?php echo sac_time_since($chat->time) . ' ' . __('ago', 'sac'); ?></em></div>
 										<ul id="mm-chat-list">
 										<?php } ?>
 
@@ -489,12 +498,21 @@ function sac_render_form() {
 
 				<div id="mm-restore-settings" class="postbox">
 					<h3><?php _e('Restore Default Options', 'sac'); ?></h3>
-					<div class="toggle default-hidden">
+					<?php if (isset($_GET["sac_restore_success"])) {
+						$sac_restore_options = true;
+					} else {
+						$sac_restore_options = false;
+					} ?>
+					<div class="toggle<?php if (!$sac_restore_options) { echo ' default-hidden'; } ?>">
+						<p><strong>Restore default settings</strong></p>
 						<p><?php _e('Click the button to restore plugin options to their default setttings.', 'sac'); ?></p>
 						<form method="post" action="options.php">
 							<input type="submit" class="button-primary" id="mm_restore_defaults" value="<?php _e('Restore default settings', 'sac'); ?>" />
 							<input type="hidden" name="sac_restore" value="Reset" /> 
 						</form>
+						<hr />
+						<p><strong>Delete all plugin settings</strong></p>
+						<p><?php _e('Note: the plugin&rsquo;s database table and options will be deleted automatically upon uninstalling (deleting) the plugin.', 'sac'); ?></p>
 					</div>
 				</div>
 
