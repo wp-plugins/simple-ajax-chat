@@ -5,9 +5,7 @@
 	$ExpStr = "Expires: ".gmdate("D, d M Y H:i:s",time() + $offset)." GMT";
 	header($ExpStr);
 	header('Content-Type: application/x-javascript');
-
-	define('WP_USE_THEMES', false);
-	require('../../../../wp-blog-header.php');
+	include("../../../../wp-config.php");
 	$sac_options = get_option('sac_options'); 
 ?>
 // Simple Ajax Chat > JavaScript

@@ -9,7 +9,7 @@ Contributors: specialk
 Donate link: http://m0n.co/donate
 Requires at least: 3.4
 Tested up to: 3.7
-Version: 20131105
+Version: 20131106
 Stable tag: trunk
 License: GPL v2 or later
 Usage: Visit the plugin's settings page for shortcodes, template tags, and more information.
@@ -116,6 +116,10 @@ Screenshots available at the [SAC Homepage](http://perishablepress.com/simple-aj
 Live Demo available at [WP-Mix](http://wp-mix.com/chat/).
 
 == Changelog ==
+
+= 20131106 =
+
+* Replaced original header codes and WP includes in sac.php
 
 = 20131105 =
 
