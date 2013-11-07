@@ -249,7 +249,11 @@ function sac_render_form() {
 								<li><?php _e('To block a word or phrase from chat, visit', 'sac'); ?> <a id="mm-panel-quaternary-link" href="#mm-panel-quaternary"><?php _e('Banned Phrases', 'sac'); ?></a>.</li>
 								<li><?php _e('For more information check the', 'sac'); ?> <a href="<?php echo plugins_url(); ?>/simple-ajax-chat/readme.txt">readme.txt</a> 
 									<?php _e('and', 'sac'); ?> <a href="<?php echo $sac_homeurl; ?>"><?php _e('SAC Homepage', 'sac'); ?></a>.</li>
-								<li>If you like this plugin, please <a href="http://wordpress.org/support/view/plugin-reviews/<?php echo basename(dirname(__FILE__)); ?>?rate=5#postform" target="_blank" title="Click Here to Rate and Review this Plugin on WordPress.org">rate it at the Plugin Directory&nbsp;&raquo;</a></li>
+								<li><?php _e('If you like this plugin, please', 'sbs'); ?> 
+									<a href="http://wordpress.org/support/view/plugin-reviews/<?php echo basename(dirname(__FILE__)); ?>?rate=5#postform" title="<?php _e('Click here to rate and review this plugin on WordPress.org', 'sbs'); ?>" target="_blank">
+										<?php _e('rate it at the Plugin Directory', 'sbs'); ?>&nbsp;&raquo;
+									</a>
+								</li>
 							</ul>
 						</div>
 					</div>

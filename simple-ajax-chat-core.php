@@ -6,7 +6,7 @@
 	Author: Jeff Starr
 	Author URI: http://monzilla.biz/
 	Donate link: http://m0n.co/donate
-	Version: 20131106
+	Version: 20131107
 	Stable tag: trunk
 	License: GPL v2
 	Usage: Visit the plugin's settings page for shortcodes, template tags, and more information.
@@ -23,7 +23,7 @@ function sac_i18n_init() {
 }
 add_action('plugins_loaded', 'sac_i18n_init');
 
-$sac_version = '20131106';
+$sac_version = '20131107';
 $sac_plugin  = 'Simple Ajax Chat';
 $sac_path    = 'simple-ajax-chat/simple-ajax-chat-admin.php';
 $sac_homeurl = 'http://perishablepress.com/simple-ajax-chat/';
@@ -71,14 +71,14 @@ function sac_plugin_action_links($links) {
 add_filter('plugin_action_links_'.plugin_basename(__FILE__), 'sac_plugin_action_links');
 
 // rate plugin link
-function add_plugin_links($links, $file) {
+function add_sac_links($links, $file) {
 	if ($file == plugin_basename(__FILE__)) {
 		$rate_url = 'http://wordpress.org/support/view/plugin-reviews/' . basename(dirname(__FILE__)) . '?rate=5#postform';
-		$links[] = '<a href="' . $rate_url . '" target="_blank" title="Click Here to Rate and Review this Plugin on WordPress.org">Rate This Plugin</a>';
+		$links[] = '<a href="' . $rate_url . '" target="_blank" title="Click Here to Rate and Review this Plugin on WordPress.org">Rate this plugin</a>';
 	}
 	return $links;
 }
-add_filter('plugin_row_meta', 'add_plugin_links', 10, 2);
+add_filter('plugin_row_meta', 'add_sac_links', 10, 2);
 
 // install DB table
 function sac_create_table() {
