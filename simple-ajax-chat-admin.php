@@ -249,9 +249,9 @@ function sac_render_form() {
 								<li><?php _e('To block a word or phrase from chat, visit', 'sac'); ?> <a id="mm-panel-quaternary-link" href="#mm-panel-quaternary"><?php _e('Banned Phrases', 'sac'); ?></a>.</li>
 								<li><?php _e('For more information check the', 'sac'); ?> <a href="<?php echo plugins_url(); ?>/simple-ajax-chat/readme.txt">readme.txt</a> 
 									<?php _e('and', 'sac'); ?> <a href="<?php echo $sac_homeurl; ?>"><?php _e('SAC Homepage', 'sac'); ?></a>.</li>
-								<li><?php _e('If you like this plugin, please', 'sbs'); ?> 
-									<a href="http://wordpress.org/support/view/plugin-reviews/<?php echo basename(dirname(__FILE__)); ?>?rate=5#postform" title="<?php _e('Click here to rate and review this plugin on WordPress.org', 'sbs'); ?>" target="_blank">
-										<?php _e('rate it at the Plugin Directory', 'sbs'); ?>&nbsp;&raquo;
+								<li><?php _e('If you like this plugin, please', 'sac'); ?> 
+									<a href="http://wordpress.org/support/view/plugin-reviews/<?php echo basename(dirname(__FILE__)); ?>?rate=5#postform" title="<?php _e('Click here to rate and review this plugin on WordPress.org', 'sac'); ?>" target="_blank">
+										<?php _e('rate it at the Plugin Directory', 'sac'); ?>&nbsp;&raquo;
 									</a>
 								</li>
 							</ul>
@@ -278,7 +278,7 @@ function sac_render_form() {
 									<tr>
 										<th scope="row"><label class="description" for="sac_options[sac_registered_only]"><?php _e('Require log in?', 'sac'); ?></label></th>
 										<td><input type="checkbox" name="sac_options[sac_registered_only]" value="1" <?php if (isset($sac_options['sac_registered_only'])) { checked('1', $sac_options['sac_registered_only']); } ?> /> 
-										<span class="mm-item-caption"><?php _e('Check this box to require users to be logged in (i.e., registered users) to use the chat box. If enabled, non-logged-in users will be able to read the chat but not participate.', 'sac'); ?></span></td>
+										<span class="mm-item-caption"><?php _e('Check this box to require users to be logged in (i.e., registered users) to view and use the chat box.', 'sac'); ?></span></td>
 									</tr>
 									<tr>
 										<th scope="row"><label class="description" for="sac_options[sac_use_url]"><?php _e('Enable URL?', 'sac'); ?></label></th>

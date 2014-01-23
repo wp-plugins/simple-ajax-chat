@@ -8,8 +8,8 @@ Author URI: http://monzilla.biz/
 Contributors: specialk
 Donate link: http://m0n.co/donate
 Requires at least: 3.4
-Tested up to: 3.7
-Version: 20131107
+Tested up to: 3.8
+Version: 20140123
 Stable tag: trunk
 License: GPL v2 or later
 Usage: Visit the plugin's settings page for shortcodes, template tags, and more information.
@@ -116,6 +116,13 @@ Screenshots available at the [SAC Homepage](http://perishablepress.com/simple-aj
 Live Demo available at [WP-Mix](http://wp-mix.com/chat/).
 
 == Changelog ==
+
+= 20140123 =
+
+* Tested with latest WordPress (3.8)
+* Added trailing slash to load_plugin_textdomain()
+* Fixed 3 incorrect _e() tags in simple-sjax-chat-admin.php
+* Edited setting description for "Require log in?" for accuracy
 
 = 20131107 =
 

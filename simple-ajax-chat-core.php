@@ -6,7 +6,7 @@
 	Author: Jeff Starr
 	Author URI: http://monzilla.biz/
 	Donate link: http://m0n.co/donate
-	Version: 20131107
+	Version: 20140123
 	Stable tag: trunk
 	License: GPL v2
 	Usage: Visit the plugin's settings page for shortcodes, template tags, and more information.
@@ -19,11 +19,11 @@ if (!function_exists('add_action')) die();
 
 // i18n
 function sac_i18n_init() {
-	load_plugin_textdomain('sac', false, dirname(plugin_basename(__FILE__)) . '/languages');
+	load_plugin_textdomain('sac', false, dirname(plugin_basename(__FILE__)) . '/languages/');
 }
 add_action('plugins_loaded', 'sac_i18n_init');
 
-$sac_version = '20131107';
+$sac_version = '20140123';
 $sac_plugin  = 'Simple Ajax Chat';
 $sac_path    = 'simple-ajax-chat/simple-ajax-chat-admin.php';
 $sac_homeurl = 'http://perishablepress.com/simple-ajax-chat/';
