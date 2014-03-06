@@ -14,7 +14,11 @@ function simple_ajax_chat() {
 	$registered_only = $sac_options['sac_registered_only']; 
 	$enable_styles   = $sac_options['sac_enable_style'];
 	$play_sound      = $sac_options['sac_play_sound'];
+	$chat_order      = $sac_options['sac_chat_order'];
 
+	if ($chat_order) $display_order = 'ASC';
+	else $display_order = 'DESC';
+	
 	if ($enable_styles) {
 		$custom_styles = '<style type="text/css">' . $sac_options['sac_custom_styles'] . '</style>';
 	}
@@ -42,9 +46,8 @@ function simple_ajax_chat() {
 		<div id="sac-content"></div>
 		<div id="sac-output">
 
-			<?php $results = $wpdb->get_results($wpdb->prepare("SELECT * FROM " . $table_prefix . "ajax_chat ORDER BY id DESC LIMIT %d", $sac_number_of_comments));
+			<?php $results = $wpdb->get_results($wpdb->prepare("SELECT * FROM " . $table_prefix . "ajax_chat ORDER BY id " . $display_order . " LIMIT %d", $sac_number_of_comments));
 			
-
 			// only add last message <div> if looping for first time
 			$sac_first_time = true;
 			if ($results) {
@@ -62,8 +65,12 @@ function simple_ajax_chat() {
 						$url = (empty($r->url) && $r->url = "http://") ? $r->name : '<a href="' . $r->url . '" target="_blank">' . $r->name . '</a>';
 					} else {
 						$url = $r->name;
-					} ?>
-							<li><span title="Posted <?php echo sac_time_since($r->time) . ' ' . __('ago', 'sac'); ?>"><?php echo stripslashes($url); ?> : </span> <?php echo convert_smilies(" " . stripslashes($r->text)); ?></li> 
+					} 
+					$name_class = preg_replace("/[\s]+/", "-", $r->name); ?>
+							
+							<li class="sac-chat-message sac-static sac-user-<?php echo $name_class; ?>">
+								<span title="Posted <?php echo sac_time_since($r->time) . ' ' . __('ago', 'sac'); ?>"><?php echo stripslashes($url); ?> : </span> <?php echo convert_smilies(" " . stripslashes($r->text)); ?>
+							</li> 
 
 					<?php $sac_first_time = false;
 				}
@@ -95,14 +102,14 @@ function simple_ajax_chat() {
 
 				<fieldset id="sac-user-info">
 					<label for="sac_name"><?php _e('Name', 'sac'); ?>:</label>
-					<input type="text" name="sac_name" id="sac_name" value="<?php if ($_COOKIE['sacUserName']) { echo htmlentities($_COOKIE['sacUserName']); } ?>" placeholder="Name" />
+					<input type="text" name="sac_name" id="sac_name" value="<?php if ($_COOKIE['sacUserName']) { echo htmlentities($_COOKIE['sacUserName']); } ?>" placeholder="<?php _e('Name', 'sac'); ?>" />
 				</fieldset>
 
 				<?php } if (!$use_url) { echo '<div style="display:none;">'; } ?>
 
 				<fieldset id="sac-user-url">
 					<label for="sac_url"><?php _e('URL', 'sac'); ?>:</label>
-					<input type="text" name="sac_url" id="sac_url" value="<?php if ($_COOKIE['sacUrl']) { echo htmlentities($_COOKIE['sacUrl']); } else { echo 'http://'; } ?>" placeholder="URL" />
+					<input type="text" name="sac_url" id="sac_url" value="<?php if ($_COOKIE['sacUrl']) { echo htmlentities($_COOKIE['sacUrl']); } else { echo 'http://'; } ?>" placeholder="<?php _e('URL', 'sac'); ?>" />
 				</fieldset>
 				<?php if (!$use_url) { echo '</div>'; } ?>
 
@@ -111,7 +118,7 @@ function simple_ajax_chat() {
 
 				<?php if ($use_textarea) { ?>
 
-					<textarea name="sac_chat" id="sac_chat" rows="3" onkeypress="return pressedEnter(this,event);" placeholder="Message"></textarea>
+					<textarea name="sac_chat" id="sac_chat" rows="3" onkeypress="return pressedEnter(this,event);" placeholder="<?php _e('Message', 'sac') ?>"></textarea>
 
 				<?php } else { ?>
 
@@ -121,7 +128,7 @@ function simple_ajax_chat() {
 
 				</fieldset>
 				<fieldset id="sac_verify" style="display:none;height:0;width:0;">
-					<label for="sac_verify">Human verification: leave this field empty.</label>
+					<label for="sac_verify"><?php _e('Human verification: leave this field empty.', 'sac'); ?></label>
 					<input name="sac_verify" type="text" size="33" maxlength="99" value="" />
 				</fieldset>
 				<div id="sac-user-submit">
@@ -151,7 +158,7 @@ function simple_ajax_chat() {
 		<?php echo $custom_form_pre; ?>
 
 		<div id="sac-panel" class="sac-reg-req">
-			<p>You must be a registered user to participate in this chat.</p>
+			<p><?php _e('You must be a registered user to participate in this chat.', 'sac'); ?></p>
 			<!--p>Please <a href="<?php wp_login_url(get_permalink()); ?>">Log in</a> to chat.</p-->
 		</div>
 

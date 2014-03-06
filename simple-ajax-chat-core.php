@@ -6,14 +6,12 @@
 	Author: Jeff Starr
 	Author URI: http://monzilla.biz/
 	Donate link: http://m0n.co/donate
-	Version: 20140123
+	Version: 20140305
 	Stable tag: trunk
 	License: GPL v2
 	Usage: Visit the plugin's settings page for shortcodes, template tags, and more information.
 	Tags: chat, box, ajax, forum
 */
-
-// NO EDITING REQUIRED - PLEASE SET PREFERENCES IN THE WP ADMIN!
 
 if (!function_exists('add_action')) die();
 
@@ -23,7 +21,7 @@ function sac_i18n_init() {
 }
 add_action('plugins_loaded', 'sac_i18n_init');
 
-$sac_version = '20140123';
+$sac_version = '20140305';
 $sac_plugin  = 'Simple Ajax Chat';
 $sac_path    = 'simple-ajax-chat/simple-ajax-chat-admin.php';
 $sac_homeurl = 'http://perishablepress.com/simple-ajax-chat/';
@@ -74,7 +72,7 @@ add_filter('plugin_action_links_'.plugin_basename(__FILE__), 'sac_plugin_action_
 function add_sac_links($links, $file) {
 	if ($file == plugin_basename(__FILE__)) {
 		$rate_url = 'http://wordpress.org/support/view/plugin-reviews/' . basename(dirname(__FILE__)) . '?rate=5#postform';
-		$links[] = '<a href="' . $rate_url . '" target="_blank" title="Click Here to Rate and Review this Plugin on WordPress.org">Rate this plugin</a>';
+		$links[] = '<a href="' . $rate_url . '" target="_blank" title="' . __('Click Here to Rate and Review this Plugin on WordPress.org', 'sac') . '">' . __('Rate this plugin', 'sac') . '</a>';
 	}
 	return $links;
 }
@@ -82,30 +80,29 @@ add_filter('plugin_row_meta', 'add_sac_links', 10, 2);
 
 // install DB table
 function sac_create_table() {
-	global $table_prefix, $wpdb, $user_level, $sac_admin_user_level;
-	get_currentuserinfo();
+	global $wpdb, $user_level, $sac_admin_user_level;
 	if ($user_level < $sac_admin_user_level) return;
-	$result = mysql_list_tables(DB_NAME);
-	$tables = array();
-	while ($row = mysql_fetch_row($result)) { $tables[] = $row[0]; }
-	if (!in_array($table_prefix . "ajax_chat", $tables)) {
-		$first_install = "yes";
-	}
-	require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-	dbDelta("CREATE TABLE " . $table_prefix . "ajax_chat (
-		id mediumint(7) NOT NULL AUTO_INCREMENT, 
-		time bigint(11) DEFAULT '0' NOT NULL, 
-		name tinytext NOT NULL, 
-		text text NOT NULL, 
-		url text NOT NULL, 
-		ip text NOT NULL, 
-		UNIQUE KEY id (id)
-	);");
-	if ($first_install == "yes") {
+	
+	$table_name = $wpdb->prefix . 'ajax_chat';
+	$check_table = $wpdb->get_var("SHOW TABLES LIKE '$table_name'");
+	
+	if ($check_table != $table_name) {
+		$sql = "CREATE TABLE " . $table_name . " (
+			id mediumint(7) NOT NULL AUTO_INCREMENT, 
+			time bigint(11) DEFAULT '0' NOT NULL, 
+			name tinytext NOT NULL, 
+			text text NOT NULL, 
+			url text NOT NULL, 
+			ip text NOT NULL, 
+			UNIQUE KEY id (id)
+		);";
+		require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+		dbDelta($sql);
+		
 		$welcome_name = "The Admin";
 		$welcome_ip   = sac_get_ip_address();
 		$welcome_text = __('High five! You&rsquo;ve successfully installed Simple Ajax Chat.', 'sac');
-		$wpdb->query("INSERT INTO " . $table_prefix . "ajax_chat (time, name, text) VALUES ('".time()."','".$welcome_name."','".$welcome_text."')");
+		$wpdb->query("INSERT INTO " . $table_name . " (time, name, text) VALUES ('".time()."','".$welcome_name."','".$welcome_text."')");
 	}
 }
 if (isset($_GET['activate']) && $_GET['activate'] == 'true') {

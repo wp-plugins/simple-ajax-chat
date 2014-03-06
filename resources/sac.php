@@ -4,7 +4,7 @@
 	$offset = 60*60*24*60;
 	$ExpStr = "Expires: ".gmdate("D, d M Y H:i:s",time() + $offset)." GMT";
 	header($ExpStr);
-	header('Content-Type: application/x-javascript');
+	header('Content-Type: application/javascript');
 	include("../../../../wp-config.php");
 	$sac_options = get_option('sac_options'); 
 ?>
@@ -265,10 +265,22 @@ function insertNewContent(liName,liText,lastResponse, liUrl, liId){
 	oSpan.appendChild(oURL);
 	<?php } ?>
 	
+	name_class = liName.replace(/[\s]+/g, "-");
+	oLi.className = 'sac-chat-message sac-live sac-user-' + name_class;
 	oSpan.appendChild(document.createTextNode(' : '));
 	oLi.appendChild(oSpan);
 	oLi.innerHTML += sac_apply_filters(liText);
-	insertO.insertBefore(oLi, insertO.firstChild);
+	
+	<?php $chat_order = $sac_options['sac_chat_order'];
+	if ($chat_order) $child = 'last';
+	else $child = 'first'; ?>
+	
+	insertO.insertBefore(oLi, insertO.<?php echo $child; ?>Child);
+
+	<?php if ($chat_order) : ?>
+	jQuery('#sac-output').animate({ scrollTop: jQuery('#sac-output').prop('scrollHeight') }, 300);
+	<?php endif; ?>
+	
 	Fat.fade_element("comment-new"+liId, 30, <?php echo $sac_options['sac_fade_length']; ?>, "<?php echo $sac_options['sac_fade_from']; ?>", "<?php echo $sac_options['sac_fade_to']; ?>");
 }
 

@@ -9,7 +9,7 @@ Contributors: specialk
 Donate link: http://m0n.co/donate
 Requires at least: 3.4
 Tested up to: 3.8
-Version: 20140123
+Version: 20140305
 Stable tag: trunk
 License: GPL v2 or later
 Usage: Visit the plugin's settings page for shortcodes, template tags, and more information.
@@ -23,7 +23,8 @@ Simple Ajax Chat makes it easy for your visitors to chat with each other on your
 
 **Features**
 
-* NEW: strong anti-spam filters
+* NEW: Display chat messages in ascending or descending order
+* Strong anti-spam filters
 * Plug-n-play functionality
 * Designed to be the simplest possible *persistent* chat
 * No configuration required, just include shortcode or template tag
@@ -116,6 +117,13 @@ Screenshots available at the [SAC Homepage](http://perishablepress.com/simple-aj
 Live Demo available at [WP-Mix](http://wp-mix.com/chat/).
 
 == Changelog ==
+
+= 20140305 =
+
+* New feature: added setting to display chats in ascending or descending order (beta)
+* Improved logic for creating chat db table, fixes "mysql_list_tables" deprecated error
+* Added various CSS selectors to chat messages for custom styling
+* Added support for localization/translation
 
 = 20140123 =
 
@@ -213,7 +221,7 @@ Live Demo available at [WP-Mix](http://wp-mix.com/chat/).
 
 Question: "Can we auto delete after some minutes all the chats?"
 
-Answer: Yes, please see this post: http://wp-mix.com/wordpress-cron-tips/
+Answer: Yes, please see this post: [WordPress Cron Tips](http://wp-mix.com/wordpress-cron-tips/)
 
 Question: "I'm interested to know if your chat plugin has the option to respond to chats via an iPhone app or another chat software. I didn't see how the chats are received."
 
@@ -226,6 +234,10 @@ Answer: In the plugin settings, add a backslash "`\`" to the exclude list ("Bann
 Question: "How do I change the maximum number of characters/messages?"
 
 Answer: This is possible by editing the variables in `simple-ajax-core.php` (see "plugin variables"). Note: the planned "Pro" version of the plugin will include plugin settings for controlling these variables.
+
+Question: "Is it possible to whitelist SAC plugin files?"
+
+Answer: Yes, check out [Simple Ajax Chat .htaccess whitelist](http://wp-mix.com/simple-ajax-chat-htaccess-whitelist/) and/or [Whitelist POST access with .htaccess](http://wp-mix.com/whitelist-post-access-htaccess/)
 
 To ask a question, visit the [SAC Homepage](http://perishablepress.com/simple-ajax-chat/) or [contact me](http://perishablepress.com/contact/).
 

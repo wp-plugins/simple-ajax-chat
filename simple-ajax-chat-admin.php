@@ -19,7 +19,7 @@ function sac_add_defaults() {
 			'sac_use_textarea'    => true,
 			'sac_registered_only' => false,
 			'sac_enable_style'    => true,
-			'sac_default_message' => 'Welcome to the Chat Forum',
+			'sac_default_message' => __('Welcome to the Chat Forum', 'sac'),
 			'sac_default_handle'  => 'Simple Ajax Chat',
 			'sac_custom_styles'   => 'div#simple-ajax-chat{width:100%;overflow:hidden}div#sac-content{display:none}div#sac-output{float:left;width:58%;height:250px;overflow:auto;border:1px solid #efefef}div#sac-latest-message{padding:5px 10px;background-color:#efefef}ul#sac-messages{margin:0;padding:0;font-size:13px;line-height:16px}ul#sac-messages li{margin:0;padding:3px 3px 3px 10px}ul#sac-messages li span{font-weight:bold}div#sac-panel{float:right;width:40%}form#sac-form fieldset{border:0;}form#sac-form fieldset label,form#sac-form fieldset input,form#sac-form fieldset textarea{float:left;clear:both;width:94%;margin:0 0 5px 2px}form#sac-form fieldset#sac-user-info label,form#sac-form fieldset#sac-user-url label,form#sac-form fieldset#sac-user-chat label{margin:0 0 0 2px}',
 			'sac_content_chat'    => '',
@@ -28,6 +28,7 @@ function sac_add_defaults() {
 			'sac_chat_append'     => '',
 			'sac_form_append'     => '',
 			'sac_play_sound'      => true,
+			'sac_chat_order'      => false,
 		);
 		update_option('sac_options', $sac_default_options);
 		update_option('sac_censors', $sac_default_censors);
@@ -50,7 +51,7 @@ if (isset($_POST['sac_restore'])) {
 		'sac_use_textarea'    => true,
 		'sac_registered_only' => false,
 		'sac_enable_style'    => true,
-		'sac_default_message' => 'Welcome to the Chat Forum',
+		'sac_default_message' => __('Welcome to the Chat Forum', 'sac'),
 		'sac_default_handle'  => 'Simple Ajax Chat',
 		'sac_custom_styles'   => 'div#simple-ajax-chat{width:100%;overflow:hidden}div#sac-content{display:none}div#sac-output{float:left;width:58%;height:250px;overflow:auto;border:1px solid #efefef}div#sac-latest-message{padding:5px 10px;background-color:#efefef}ul#sac-messages{margin:0;padding:0;font-size:13px;line-height:16px}ul#sac-messages li{margin:0;padding:3px 3px 3px 10px}ul#sac-messages li span{font-weight:bold}div#sac-panel{float:right;width:40%}form#sac-form fieldset{border:0;}form#sac-form fieldset label,form#sac-form fieldset input,form#sac-form fieldset textarea{float:left;clear:both;width:94%;margin:0 0 5px 2px}form#sac-form fieldset#sac-user-info label,form#sac-form fieldset#sac-user-url label,form#sac-form fieldset#sac-user-chat label{margin:0 0 0 2px}',
 		'sac_content_chat'    => '',
@@ -59,6 +60,7 @@ if (isset($_POST['sac_restore'])) {
 		'sac_chat_append'     => '',
 		'sac_form_append'     => '',
 		'sac_play_sound'      => true,
+		'sac_chat_order'      => false,
 	);
 	update_option('sac_options', $sac_default_options);
 	update_option('sac_censors', $sac_default_censors);
@@ -93,6 +95,9 @@ function sac_validate_options($input) {
 
 	if (!isset($input['sac_play_sound'])) $input['sac_play_sound'] = null;
 	$input['sac_play_sound'] = ($input['sac_play_sound'] == 1 ? 1 : 0);
+
+	if (!isset($input['sac_chat_order'])) $input['sac_chat_order'] = null;
+	$input['sac_chat_order'] = ($input['sac_chat_order'] == 1 ? 1 : 0);
 
 	$input['sac_update_seconds']  = wp_filter_nohtml_kses($input['sac_update_seconds']);
 	$input['sac_fade_length']     = wp_filter_nohtml_kses($input['sac_fade_length']);
@@ -155,18 +160,18 @@ function sac_render_form() {
 	$chat_report = 'Currently there';
 	if (!empty($chats)) {
 		if (count($chats) == 1) { 
-			$chat_report .= ' is '; 
+			$chat_report .= __(' is ', 'sac'); 
 		} else { 
-			$chat_report .= ' are '; 
+			$chat_report .= __(' are ', 'sac'); 
 		}
-		$chat_report .= count($chats) . ' chat message';
+		$chat_report .= count($chats) . __(' chat message', 'sac');
 		if (count($chats) == 1) { 
-			$chat_report .= ' (your default message)'; 
+			$chat_report .= __(' (your default message)', 'sac'); 
 		} else { 
-			$chat_report .= 's'; 
+			$chat_report .= __('s', 'sac'); 
 		}
 	} else {
-		$chat_report .= '0 chat messages. Please add at least one message via the chat box.';
+		$chat_report .= __('0 chat messages. Please add at least one message via the chat box.', 'sac');
 	} ?>
 
 	<style type="text/css">
@@ -275,6 +280,11 @@ function sac_render_form() {
 							<h4><?php _e('General options', 'sac'); ?></h4>
 							<div class="mm-table-wrap">
 								<table class="widefat mm-table">
+									<tr>
+										<th scope="row"><label class="description" for="sac_options[sac_chat_order]"><?php _e('Chat order', 'sac'); ?></label></th>
+										<td><input type="checkbox" name="sac_options[sac_chat_order]" value="1" <?php if (isset($sac_options['sac_chat_order'])) { checked('1', $sac_options['sac_chat_order']); } ?> /> 
+										<span class="mm-item-caption"><?php _e('Check this box to display chats in ascending order (new messages appear at the bottom of the list). Note: this new feature is experimental and requires jQuery to work correctly. Default: unchecked (new messages appear at the top of the list).', 'sac'); ?></span></td>
+									</tr>
 									<tr>
 										<th scope="row"><label class="description" for="sac_options[sac_registered_only]"><?php _e('Require log in?', 'sac'); ?></label></th>
 										<td><input type="checkbox" name="sac_options[sac_registered_only]" value="1" <?php if (isset($sac_options['sac_registered_only'])) { checked('1', $sac_options['sac_registered_only']); } ?> /> 
