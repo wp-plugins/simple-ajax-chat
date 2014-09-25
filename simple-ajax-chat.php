@@ -1,6 +1,5 @@
 <?php // Simple Ajax Chat > Ajax
 
-// utilize wordpress
 define('WP_USE_THEMES', false);
 require('../../../wp-blog-header.php');
 $sac_options = get_option('sac_options');
@@ -10,15 +9,11 @@ if (!function_exists('add_action')) die();
 $wpdb->hide_errors();
 error_reporting(0);
 
-// set variables
-$sac_host    = '';
-$sac_request = '';
-$sac_referer = '';
-$sac_address = '';
-if (isset($_SERVER["HTTP_HOST"]))    $sac_host    = sac_clean($_SERVER["HTTP_HOST"]);
-if (isset($_SERVER["REQUEST_URI"]))  $sac_request = sac_clean($_SERVER["REQUEST_URI"]);
-if (isset($_SERVER['HTTP_REFERER'])) $sac_referer = sac_clean($_SERVER['HTTP_REFERER']);
-if (isset($_SERVER['REMOTE_ADDR']))  $sac_address = sac_clean($_SERVER['REMOTE_ADDR']);
+$sac_host    = ''; $sac_request = ''; $sac_referer = ''; $sac_address = '';
+if (isset($_SERVER["HTTP_HOST"]))    $sac_host    = sanitize_text_field($_SERVER["HTTP_HOST"]);
+if (isset($_SERVER["REQUEST_URI"]))  $sac_request = sanitize_text_field($_SERVER["REQUEST_URI"]);
+if (isset($_SERVER['HTTP_REFERER'])) $sac_referer = sanitize_text_field($_SERVER['HTTP_REFERER']);
+if (isset($_SERVER['REMOTE_ADDR']))  $sac_address = sanitize_text_field($_SERVER['REMOTE_ADDR']);
 
 $sac_chat_url = 'http://' . $sac_host . $sac_request;
 $sac_match = preg_match("/$sac_host/i", $sac_referer);
@@ -30,7 +25,7 @@ $registered_only = $sac_options['sac_registered_only'];
 if ($_COOKIE['PHPSESSID'] == session_id()) {
 	// legit user
 } else {
-	die ('Please do not load this page directly. Thanks!');
+	die('Please do not load this page directly. Thanks!');
 }
 session_unset();
 
@@ -70,13 +65,13 @@ if ((isset($sac_match)) && ($sac_match !== null) && ($sac_match !== 0) && ($sac_
 					if (isset($_POST['sac_name']) && isset($_POST['sac_chat'])) {
 						if ($_POST['sac_name'] != '' && $_POST['sac_chat'] != '') {
 							if (isset($_POST['sac_url'])) {
-								$sac_url = sac_clean($_POST['sac_url']);
+								$sac_url = sanitize_text_field($_POST['sac_url']);
 							} else {
 								$sac_url = '';
 							}
-							$sac_name = sac_clean($_POST['sac_name']);
-							$sac_chat = sac_clean($_POST['sac_chat']);
-							$referrer = sac_clean($_SERVER['HTTP_REFERER']);
+							$sac_name = sanitize_text_field($_POST['sac_name']);
+							$sac_chat = sanitize_text_field($_POST['sac_chat']);
+							$referrer = sanitize_text_field($_SERVER['HTTP_REFERER']);
 							sac_addData($sac_name, $sac_chat, $sac_url);
 							sac_deleteOld();
 
@@ -97,18 +92,23 @@ if ((isset($sac_match)) && ($sac_match !== null) && ($sac_match !== 0) && ($sac_
 
 // process chat data
 function sac_addData($sac_user_name, $sac_user_text, $sac_user_url) {
-	global $wpdb, $table_prefix, $sac_number_of_characters, $sac_username_length;
-
+	global $wpdb, $table_prefix, $sac_number_of_characters, $sac_username_length, $sac_options;
+	
 	$sac_user_text = substr(trim($sac_user_text), 0, $sac_number_of_characters);
+	$sac_user_text = (empty($sac_user_text)) ? '' : sac_special_chars($sac_user_text);
+	
 	$sac_user_name = substr(trim($sac_user_name), 0, $sac_username_length);
-
-	$sac_user_text = sac_special_chars($sac_user_text);
-	$sac_user_name = (empty($sac_user_name)) ? "Anonymous" : sac_special_chars($sac_user_name);
-	$sac_user_url  = ($sac_user_url == "http://") ? "" : sac_special_chars($sac_user_url);
-
-	// @ http://codex.wordpress.org/Data_Validation#Database
-	// @ http://codex.wordpress.org/Function_Reference/wpdb_Class
-	$query = $wpdb->get_row("SELECT * FROM $wpdb->options WHERE option_name = 'sac_censors'", ARRAY_A); // associative index array
+	$sac_user_name = (empty($sac_user_name)) ? 'Anonymous' : sanitize_text_field($sac_user_name);
+	
+	$use_username  = $sac_options['sac_logged_name'];
+	$current_user  = wp_get_current_user();
+	$logged_name   = sanitize_text_field($current_user->display_name);
+	
+	if ($use_username && !empty($logged_name)) $sac_user_name = $logged_name;
+	
+	$sac_user_url  = ($sac_user_url == 'http://') ? '' : esc_url($sac_user_url);
+	
+	$query = $wpdb->get_row("SELECT * FROM $wpdb->options WHERE option_name = 'sac_censors'", ARRAY_A);
 	$list  = $query['option_value'];
 
 	$censors = explode(",", strval($list));
@@ -142,3 +142,5 @@ function sac_deleteOld() {
 }
 
 exit();
+
+

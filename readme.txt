@@ -7,9 +7,9 @@ Author: Jeff Starr
 Author URI: http://monzilla.biz/
 Contributors: specialk
 Donate link: http://m0n.co/donate
-Requires at least: 3.4
-Tested up to: 3.8
-Version: 20140305
+Requires at least: 3.7
+Tested up to: 4.0
+Version: 20140923
 Stable tag: trunk
 License: GPL v2 or later
 Usage: Visit the plugin's settings page for shortcodes, template tags, and more information.
@@ -23,7 +23,6 @@ Simple Ajax Chat makes it easy for your visitors to chat with each other on your
 
 **Features**
 
-* NEW: Display chat messages in ascending or descending order
 * Strong anti-spam filters
 * Plug-n-play functionality
 * Designed to be the simplest possible *persistent* chat
@@ -44,6 +43,8 @@ Simple Ajax Chat makes it easy for your visitors to chat with each other on your
 * Super-slick toggling settings page
 * Option to play sound alert for chat messages
 * Timestamp for each chat message
+* Display chat messages in ascending or descending order
+* NEW: option to use logged-in username as the chat name
 
 **Customize everything**
 
@@ -117,6 +118,30 @@ Screenshots available at the [SAC Homepage](http://perishablepress.com/simple-aj
 Live Demo available at [WP-Mix](http://wp-mix.com/chat/).
 
 == Changelog ==
+
+= 20140923 =
+
+* Tested on latest version of WordPress (4.0)
+* Increased minimum version requirement to WP 3.7
+* Added conditional check to min-version function
+* Added option to display logged-in username as chat name
+* Improved logic of simple_ajax_chat()
+* Improved logic of sac_addData()
+* Improved logic in core and admin files
+* Increased default username max-length
+* Fine-tuned plugin settings page
+* Removed vestigial killswitch variable
+* Fixed issue where special characters were not displaying correctly
+* Replaced hardcoded paths with WP tags (e.g., wp-content directory)
+* Replaced $user_nickname global with wp_get_current_user()
+* Minified portions of the SAC JavaScript file for better performance
+* Added conditional check for $sac_lastID is numeric
+* Now using sanitize_text_field() for IPs
+* Replaced htmlspecialchars() with sanitize_text_field()
+* Replaced sac_special_chars() with esc_url() for user URL
+* Replaced htmlentities(), stripslashes(), sac_clean() with sanitize_text_field()
+* Replaced PHP tags with WP tags in sac_special_chars()
+* Updated mo/po translation files
 
 = 20140305 =
 

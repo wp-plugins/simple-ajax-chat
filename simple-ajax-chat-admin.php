@@ -2,6 +2,8 @@
 
 if (!function_exists('add_action')) die();
 
+
+
 // add default settings
 function sac_add_defaults() {
 	$tmp = get_option('sac_options');
@@ -29,6 +31,7 @@ function sac_add_defaults() {
 			'sac_form_append'     => '',
 			'sac_play_sound'      => true,
 			'sac_chat_order'      => false,
+			'sac_logged_name'     => 0,
 		);
 		update_option('sac_options', $sac_default_options);
 		update_option('sac_censors', $sac_default_censors);
@@ -61,12 +64,15 @@ if (isset($_POST['sac_restore'])) {
 		'sac_form_append'     => '',
 		'sac_play_sound'      => true,
 		'sac_chat_order'      => false,
+		'sac_logged_name'     => 0,
 	);
 	update_option('sac_options', $sac_default_options);
 	update_option('sac_censors', $sac_default_censors);
-	$fixed_uri = str_replace("options.php", "options-general.php", sac_clean($_SERVER["REQUEST_URI"]));
-	header("Location: http://" . sac_clean($_SERVER["HTTP_HOST"]) . $fixed_uri . "?page=" . $sac_path . "&sac_restore_success=true");
+	$fixed_uri = str_replace("options.php", "options-general.php", sanitize_text_field($_SERVER["REQUEST_URI"]));
+	header("Location: http://" . sanitize_text_field($_SERVER["HTTP_HOST"]) . $fixed_uri . "?page=" . $sac_path . "&sac_restore_success=true");
 }
+
+
 
 // whitelist settings
 function sac_init() {
@@ -98,6 +104,9 @@ function sac_validate_options($input) {
 
 	if (!isset($input['sac_chat_order'])) $input['sac_chat_order'] = null;
 	$input['sac_chat_order'] = ($input['sac_chat_order'] == 1 ? 1 : 0);
+
+	if (!isset($input['sac_logged_name'])) $input['sac_logged_name'] = null;
+	$input['sac_logged_name'] = ($input['sac_logged_name'] == 1 ? 1 : 0);
 
 	$input['sac_update_seconds']  = wp_filter_nohtml_kses($input['sac_update_seconds']);
 	$input['sac_fade_length']     = wp_filter_nohtml_kses($input['sac_fade_length']);
@@ -155,9 +164,12 @@ if (function_exists('add_action')) add_action('admin_menu', 'sac_add_options_pag
 // render options page
 function sac_render_form() {
 	global $wpdb, $sac_plugin, $sac_path, $sac_homeurl, $sac_version, $sac_number_of_comments; 
+	
 	$chats = $wpdb->get_results($wpdb->prepare("SELECT * FROM " . $wpdb->prefix . "ajax_chat ORDER BY id DESC LIMIT %d", $sac_number_of_comments)); 
 	// $total = $wpdb->get_var($wpdb->prepare("SELECT id FROM " . $wpdb->prefix . "ajax_chat ORDER BY id DESC LIMIT 1")); // get message count (alt)
+	
 	$chat_report = 'Currently there';
+	
 	if (!empty($chats)) {
 		if (count($chats) == 1) { 
 			$chat_report .= __(' is ', 'sac'); 
@@ -187,10 +199,9 @@ function sac_render_form() {
 		#mm-plugin-options hr { margin-left: 15px; margin-right: 15px; }
 
 		.mm-table-wrap { margin: 15px; }
-		.mm-table-wrap td { padding: 5px 10px; vertical-align: middle; }
-		.mm-table-wrap .mm-table {}
-		.mm-table-wrap .widefat td { width: 80%; padding: 5px 10px; vertical-align: middle; }
-		.mm-table-wrap .widefat th { width: 20%; padding: 10px; vertical-align: middle; }
+		.mm-table-wrap td,
+		.mm-table-wrap th { padding: 15px; vertical-align: middle; }
+		.mm-table-wrap .widefat th { width: 20%; }
 		.mm-item-caption { margin: 3px 0 0 3px; font-size: 11px; line-height: 18px; color: #555; }
 		.mm-code { background-color: #fafae0; color: #333; font-size: 14px; }
 
@@ -318,6 +329,11 @@ function sac_render_form() {
 										<th scope="row"><label class="description" for="sac_options[sac_play_sound]"><?php _e('Sound alerts?', 'sac'); ?></label></th>
 										<td><input type="checkbox" name="sac_options[sac_play_sound]" value="1" <?php if (isset($sac_options['sac_play_sound'])) { checked('1', $sac_options['sac_play_sound']); } ?> /> 
 										<span class="mm-item-caption"><?php _e('Check this box if you want to hear a sound for new chat messages. Tip: to change the sound file, replace the file "msg.mp3" with any (short) mp3 file.', 'sac'); ?></span></td>
+									</tr>
+									<tr>
+										<th scope="row"><label class="description" for="sac_options[sac_logged_name]"><?php _e('Use logged-in username', 'sac'); ?></label></th>
+										<td><input type="checkbox" name="sac_options[sac_logged_name]" value="1" <?php if (isset($sac_options['sac_logged_name'])) { checked('1', $sac_options['sac_logged_name']); } ?> /> 
+										<span class="mm-item-caption"><?php _e('Check this box if you want to use the logged-in username as the chat name.', 'sac'); ?></span></td>
 									</tr>
 								</table>
 							</div>
@@ -600,3 +616,5 @@ function sac_render_form() {
 	</script>
 
 <?php }
+
+
