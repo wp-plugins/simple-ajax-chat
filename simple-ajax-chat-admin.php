@@ -2,8 +2,6 @@
 
 if (!function_exists('add_action')) die();
 
-
-
 // add default settings
 function sac_add_defaults() {
 	$tmp = get_option('sac_options');
@@ -32,6 +30,10 @@ function sac_add_defaults() {
 			'sac_play_sound'      => true,
 			'sac_chat_order'      => false,
 			'sac_logged_name'     => 0,
+			'version_alert'       => 0,
+			'max_chats'           => '999',
+			'max_chars'           => '500',
+			'max_uname'           => '20',
 		);
 		update_option('sac_options', $sac_default_options);
 		update_option('sac_censors', $sac_default_censors);
@@ -65,14 +67,16 @@ if (isset($_POST['sac_restore'])) {
 		'sac_play_sound'      => true,
 		'sac_chat_order'      => false,
 		'sac_logged_name'     => 0,
+		'version_alert'       => 0,
+		'max_chats'           => '999',
+		'max_chars'           => '500',
+		'max_uname'           => '20',
 	);
 	update_option('sac_options', $sac_default_options);
 	update_option('sac_censors', $sac_default_censors);
 	$fixed_uri = str_replace("options.php", "options-general.php", sanitize_text_field($_SERVER["REQUEST_URI"]));
 	header("Location: http://" . sanitize_text_field($_SERVER["HTTP_HOST"]) . $fixed_uri . "?page=" . $sac_path . "&sac_restore_success=true");
 }
-
-
 
 // whitelist settings
 function sac_init() {
@@ -107,6 +111,9 @@ function sac_validate_options($input) {
 
 	if (!isset($input['sac_logged_name'])) $input['sac_logged_name'] = null;
 	$input['sac_logged_name'] = ($input['sac_logged_name'] == 1 ? 1 : 0);
+	
+	if (!isset($input['version_alert'])) $input['version_alert'] = null;
+	$input['version_alert'] = ($input['version_alert'] == 1 ? 1 : 0);
 
 	$input['sac_update_seconds']  = wp_filter_nohtml_kses($input['sac_update_seconds']);
 	$input['sac_fade_length']     = wp_filter_nohtml_kses($input['sac_fade_length']);
@@ -118,6 +125,9 @@ function sac_validate_options($input) {
 	$input['sac_default_handle']  = wp_filter_nohtml_kses($input['sac_default_handle']);
 	$input['sac_custom_styles']   = wp_filter_nohtml_kses($input['sac_custom_styles']);
 	$input['sac_script_url']      = wp_filter_nohtml_kses($input['sac_script_url']);
+	$input['max_chats']           = wp_filter_nohtml_kses($input['max_chats']);
+	$input['max_chars']           = wp_filter_nohtml_kses($input['max_chars']);
+	$input['max_uname']           = wp_filter_nohtml_kses($input['max_uname']);
 
 	// dealing with kses
 	global $allowedposttags;
@@ -163,10 +173,12 @@ if (function_exists('add_action')) add_action('admin_menu', 'sac_add_options_pag
 
 // render options page
 function sac_render_form() {
-	global $wpdb, $sac_plugin, $sac_path, $sac_homeurl, $sac_version, $sac_number_of_comments; 
+	global $wpdb, $sac_plugin, $sac_path, $sac_homeurl, $sac_version, $sac_options; 
 	
-	$chats = $wpdb->get_results($wpdb->prepare("SELECT * FROM " . $wpdb->prefix . "ajax_chat ORDER BY id DESC LIMIT %d", $sac_number_of_comments)); 
-	// $total = $wpdb->get_var($wpdb->prepare("SELECT id FROM " . $wpdb->prefix . "ajax_chat ORDER BY id DESC LIMIT 1")); // get message count (alt)
+	$chats = $wpdb->get_results($wpdb->prepare("SELECT * FROM " . $wpdb->prefix . "ajax_chat ORDER BY id DESC LIMIT %d", $sac_options['max_chats'])); 
+	
+	if (!$sac_options['version_alert']) $display_alert = ' style="display:block;"';
+	else $display_alert = ' style="display:none;"';
 	
 	$chat_report = 'Currently there';
 	
@@ -187,6 +199,9 @@ function sac_render_form() {
 	} ?>
 
 	<style type="text/css">
+		.dismiss-alert { margin: 15px; }
+		.dismiss-alert-wrap { display: inline-block; padding: 7px 0 10px 0; }
+		.dismiss-alert .description { display: inline-block; margin: -2px 10px 0 0; }
 		.mm-panel-overview { padding-left: 135px; background: url(<?php echo plugins_url(); ?>/simple-ajax-chat/resources/sac-logo.png) no-repeat 15px 0; }
 
 		#mm-plugin-options h2 small { font-size: 60%; }
@@ -221,8 +236,7 @@ function sac_render_form() {
 	</style>
 
 	<div id="mm-plugin-options" class="wrap">
-		<?php screen_icon(); ?>
-
+		
 		<h2><?php echo $sac_plugin; ?> <small><?php echo 'v' . $sac_version; ?></small></h2>
 		<?php if (isset($_GET['sac_delete'])) { ?>
 		<div id="setting-error-settings_updated" class="updated settings-error">
@@ -247,47 +261,73 @@ function sac_render_form() {
 		<?php } ?>
 
 		<div id="mm-panel-toggle"><a href="<?php get_admin_url() . 'options-general.php?page=' . $sac_path; ?>"><?php _e('Toggle all panels', 'sac'); ?></a></div>
+		
 		<div class="metabox-holder">
 			<div class="meta-box-sortables ui-sortable">
-	
-				<div id="mm-panel-overview" class="postbox">
-					<h3><?php _e('Overview', 'sac'); ?></h3>
-					<div class="toggle">
-						<div class="mm-panel-overview">
-							<p>
-								<strong><?php echo $sac_plugin; ?></strong> <?php _e('(SAC) displays an Ajax-powered chat box anywhere on your site.', 'sac'); ?>
-								<?php _e('Use the shortcode to display the chat box on a post or page. Use the template tag to display anywhere in your theme template.', 'sac'); ?>
-							</p>
-							<ul>
-								<li><?php _e('To configure your settings, visit', 'sac'); ?> <a id="mm-panel-primary-link" href="#mm-panel-primary"><?php _e('Chat Options', 'sac'); ?></a>.</li>
-								<li><?php _e('For the shortcode and template tag, visit', 'sac'); ?> <a id="mm-panel-secondary-link" href="#mm-panel-secondary"><?php _e('Template Tag &amp; Shortcode', 'sac'); ?></a>.</li>
-								<li><?php _e('To manage the current chat messages, visit', 'sac'); ?> <a id="mm-panel-tertiary-link" href="#mm-panel-tertiary"><?php _e('Manage Chat Messages', 'sac'); ?></a>.</li>
-								<li><?php _e('To block a word or phrase from chat, visit', 'sac'); ?> <a id="mm-panel-quaternary-link" href="#mm-panel-quaternary"><?php _e('Banned Phrases', 'sac'); ?></a>.</li>
-								<li><?php _e('For more information check the', 'sac'); ?> <a href="<?php echo plugins_url(); ?>/simple-ajax-chat/readme.txt">readme.txt</a> 
-									<?php _e('and', 'sac'); ?> <a href="<?php echo $sac_homeurl; ?>"><?php _e('SAC Homepage', 'sac'); ?></a>.</li>
-								<li><?php _e('If you like this plugin, please', 'sac'); ?> 
-									<a href="http://wordpress.org/support/view/plugin-reviews/<?php echo basename(dirname(__FILE__)); ?>?rate=5#postform" title="<?php _e('Click here to rate and review this plugin on WordPress.org', 'sac'); ?>" target="_blank">
-										<?php _e('rate it at the Plugin Directory', 'sac'); ?>&nbsp;&raquo;
-									</a>
-								</li>
-							</ul>
+				
+				<form method="post" action="options.php">
+					<?php settings_fields('sac_plugin_options'); ?>
+					
+					<div id="mm-panel-alert"<?php echo $display_alert; ?> class="postbox">
+						<h3><?php _e('Simple Ajax Chat needs your support!', 'sac'); ?></h3>
+						<div class="toggle">
+							<div class="mm-panel-alert">
+								<p>
+									<strong><?php _e('Your support is needed to keep this plugin going.', 'sac'); ?></strong> 
+								</p>
+								<p>
+									<?php _e('If you use Simple Ajax Chat and would like development to continue, please', 'sac'); ?> 
+									<a target="_blank" href="http://m0n.co/donate"><?php _e('make a donation&nbsp;&raquo;', 'sac'); ?></a>
+								</p>
+								<p> 
+									<?php _e('Thank you to those who show support!', 'sac'); ?>
+								</p>
+								<div class="dismiss-alert">
+									<div class="dismiss-alert-wrap">
+										<input class="input-alert" name="sac_options[version_alert]" type="checkbox" value="1" <?php if (isset($sac_options['version_alert'])) checked('1', $sac_options['version_alert']); ?> />  
+										<label class="description" for="sac_options[version_alert]"><?php _e('Check this box if you have made a donation', 'sac') ?></label>
+									</div>
+								</div>
+							</div>
 						</div>
 					</div>
-				</div>
+					
+					<div id="mm-panel-overview" class="postbox">
+						<h3><?php _e('Overview', 'sac'); ?></h3>
+						<div class="toggle">
+							<div class="mm-panel-overview">
+								<p>
+									<strong><?php echo $sac_plugin; ?></strong> <?php _e('(SAC) displays an Ajax-powered chat box anywhere on your site.', 'sac'); ?>
+									<?php _e('Use the shortcode to display the chat box on a post or page. Use the template tag to display anywhere in your theme template.', 'sac'); ?>
+								</p>
+								<ul>
+									<li><?php _e('To configure your settings, visit', 'sac'); ?> <a id="mm-panel-primary-link" href="#mm-panel-primary"><?php _e('Chat Options', 'sac'); ?></a>.</li>
+									<li><?php _e('For the shortcode and template tag, visit', 'sac'); ?> <a id="mm-panel-secondary-link" href="#mm-panel-secondary"><?php _e('Template Tag &amp; Shortcode', 'sac'); ?></a>.</li>
+									<li><?php _e('To manage the current chat messages, visit', 'sac'); ?> <a id="mm-panel-tertiary-link" href="#mm-panel-tertiary"><?php _e('Manage Chat Messages', 'sac'); ?></a>.</li>
+									<li><?php _e('To block a word or phrase from chat, visit', 'sac'); ?> <a id="mm-panel-quaternary-link" href="#mm-panel-quaternary"><?php _e('Banned Phrases', 'sac'); ?></a>.</li>
+									<li>
+										<?php _e('For more information check the', 'sac'); ?> <a target="_blank" href="<?php echo plugins_url('/simple-ajax-chat/readme.txt', dirname(__FILE__)); ?>">readme.txt</a> 
+										<?php _e('and', 'sac'); ?> <a target="_blank" href="<?php echo $sac_homeurl; ?>"><?php _e('SAC Homepage', 'sac'); ?></a>.
+									</li>
+									<li><?php _e('If you like this plugin, please', 'sac'); ?> 
+										<a target="_blank" href="http://wordpress.org/support/view/plugin-reviews/<?php echo basename(dirname(__FILE__)); ?>?rate=5#postform" title="<?php _e('Click here to rate and review this plugin on WordPress.org', 'sac'); ?>">
+											<?php _e('rate it at the Plugin Directory', 'sac'); ?>&nbsp;&raquo;
+										</a>
+									</li>
+								</ul>
+							</div>
+						</div>
+					</div>
 
-				<div id="mm-panel-primary" class="postbox">
-					<h3><?php _e('Chat Options', 'sac'); ?></h3>
+					<div id="mm-panel-primary" class="postbox">
+						<h3><?php _e('Chat Options', 'sac'); ?></h3>
 
-					<?php if (isset($_GET["settings-updated"]) || isset($_GET["sac_restore_success"])) {
-						$sac_updated_options = true;
-					} else {
-						$sac_updated_options = false;
-					} ?>
+						<?php if (isset($_GET["settings-updated"]) || isset($_GET["sac_restore_success"])) $sac_updated_options = true;
+							else $sac_updated_options = false; ?>
 
-					<div class="toggle<?php if (!$sac_updated_options) { echo ' default-hidden'; } ?>">
-						<p><?php _e('Here you may customize Simple Ajax Chat to suit your needs. Note: after updating time and color options, you may need to refresh/empty the browser cache before you see the changes take effect.', 'sac'); ?></p>
-						<form method="post" action="options.php">
-							<?php $sac_options = get_option('sac_options'); settings_fields('sac_plugin_options'); ?>
+						<div class="toggle<?php if (!$sac_updated_options) { echo ' default-hidden'; } ?>">
+							<p><?php _e('Here you may customize Simple Ajax Chat to suit your needs. Note: after updating time and color options, you may need to refresh/empty the browser cache before you see the changes take effect.', 'sac'); ?></p>
+							
 							<h4><?php _e('General options', 'sac'); ?></h4>
 							<div class="mm-table-wrap">
 								<table class="widefat mm-table">
@@ -334,6 +374,21 @@ function sac_render_form() {
 										<th scope="row"><label class="description" for="sac_options[sac_logged_name]"><?php _e('Use logged-in username', 'sac'); ?></label></th>
 										<td><input type="checkbox" name="sac_options[sac_logged_name]" value="1" <?php if (isset($sac_options['sac_logged_name'])) { checked('1', $sac_options['sac_logged_name']); } ?> /> 
 										<span class="mm-item-caption"><?php _e('Check this box if you want to use the logged-in username as the chat name.', 'sac'); ?></span></td>
+									</tr>
+									<tr>
+										<th scope="row"><label class="description" for="sac_options[max_chats]"><?php _e('Max chats', 'sac'); ?></label></th>
+										<td><input type="number" name="sac_options[max_chats]" step="1" min="1" maxlength="6" value="<?php echo $sac_options['max_chats']; ?>" /> 
+										<span class="mm-item-caption"><?php _e('Maximum number of chats that should be allowed in the chat box.', 'sac'); ?></span></td>
+									</tr>
+									<tr>
+										<th scope="row"><label class="description" for="sac_options[max_chars]"><?php _e('Max characters', 'sac'); ?></label></th>
+										<td><input type="number" name="sac_options[max_chars]" step="1" min="1" maxlength="6" value="<?php echo $sac_options['max_chars']; ?>" /> 
+										<span class="mm-item-caption"><?php _e('Maximum number of chats that should be allowed in each chat message.', 'sac'); ?></span></td>
+									</tr>
+									<tr>
+										<th scope="row"><label class="description" for="sac_options[max_uname]"><?php _e('Username length', 'sac'); ?></label></th>
+										<td><input type="number" name="sac_options[max_uname]" step="1" min="1" maxlength="6" value="<?php echo $sac_options['max_uname']; ?>" /> 
+										<span class="mm-item-caption"><?php _e('Maximum number of chats that should be allowed in the username.', 'sac'); ?></span></td>
 									</tr>
 								</table>
 							</div>
@@ -430,9 +485,10 @@ function sac_render_form() {
 							<!-- maybe use these in a future update -->
 							<input type="hidden" name="sac_options[sac_text_color]" value="#777777" />
 							<input type="hidden" name="sac_options[sac_name_color]" value="#333333" />
-						</form>
+						</div>
 					</div>
-				</div>
+					
+				</form>
 
 				<div id="mm-panel-secondary" class="postbox">
 					<h3><?php _e('Template Tag &amp; Shortcode', 'sac'); ?></h3>
@@ -542,7 +598,7 @@ function sac_render_form() {
 						</form>
 						<hr />
 						<p><strong>Delete all plugin settings</strong></p>
-						<p><?php _e('Note: the plugin&rsquo;s database table and options will be deleted automatically upon uninstalling (deleting) the plugin.', 'sac'); ?></p>
+						<p><?php _e('To delete all plugin settings and chat messages from the database, simply uninstall (delete) the plugin.', 'sac'); ?></p>
 					</div>
 				</div>
 
@@ -595,6 +651,12 @@ function sac_render_form() {
 				jQuery('#mm-panel-quaternary .toggle').slideToggle(300);
 				return true;
 			});
+			//dismiss_alert
+			if (!jQuery('.dismiss-alert-wrap input').is(':checked')){
+				jQuery('.dismiss-alert-wrap input').one('click',function(){
+					jQuery('.dismiss-alert-wrap').after('<input type="submit" class="button-secondary" value="<?php _e('Hide this notice', 'gap'); ?>" />');
+				});
+			}
 			// prevent accidents
 			jQuery("#mm_truncate_all").click(function(){
 				var r = confirm("<?php _e('Are you sure you want to delete alll chat messages? (this action cannot be undone)', 'sac'); ?>");
@@ -616,5 +678,3 @@ function sac_render_form() {
 	</script>
 
 <?php }
-
-

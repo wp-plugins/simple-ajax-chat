@@ -3,23 +3,24 @@
 	Plugin Name: Simple Ajax Chat
 	Plugin URI: http://perishablepress.com/simple-ajax-chat/
 	Description: Displays a fully customizable Ajax-powered chat box anywhere on your site.
+	Tags: chat, box, ajax, forum, private, avatars, filtering, smilies, secure, antispam, html5, messaging, im, instant message
 	Author: Jeff Starr
 	Author URI: http://monzilla.biz/
 	Donate link: http://m0n.co/donate
-	Version: 20140923
+	Contributors: specialk
+	Requires at least: 3.8
+	Tested up to: 4.1
 	Stable tag: trunk
-	License: GPL v2
-	Usage: Visit the plugin's settings page for shortcodes, template tags, and more information.
-	Tags: chat, ajax, forum, im
+	Version: 20150316
+	Text Domain: sac
+	Domain Path: /languages/
+	License: GPL v2 or later
 */
 
 if (!function_exists('add_action')) die();
 
-
-
-$sac_options = get_option('sac_options');
-
-$sac_version = '20140923';
+$sac_wp_vers = '3.8';
+$sac_version = '20150316';
 $sac_plugin  = 'Simple Ajax Chat';
 $sac_path    = 'simple-ajax-chat/simple-ajax-chat-admin.php';
 $sac_homeurl = 'http://perishablepress.com/simple-ajax-chat/';
@@ -33,15 +34,10 @@ $sac_user_text = isset($_POST['c']) ? $_POST['c'] : "";
 $sacGetChat  = isset($_GET['sacGetChat'])  ? $_GET['sacGetChat']  : "";
 $sacSendChat = isset($_GET['sacSendChat']) ? $_GET['sacSendChat'] : "";
 
-$sac_admin_user_level     = 8;
-$sac_number_of_comments   = 999;
-$sac_number_of_characters = 500;
-$sac_username_length      = 20;
-
 require_once(dirname(__FILE__) . '/simple-ajax-chat-admin.php');
 require_once(dirname(__FILE__) . '/simple-ajax-chat-form.php');
 
-
+$sac_options = get_option('sac_options');
 
 // i18n
 function sac_i18n_init() {
@@ -51,24 +47,26 @@ add_action('plugins_loaded', 'sac_i18n_init');
 
 // check WP version
 function sac_require_wp_version() {
-	global $wp_version, $sac_path, $sac_plugin;
-	if (version_compare($wp_version, '3.7', '<')) {
-		if (is_plugin_active($sac_path)) {
-			deactivate_plugins($sac_path);
-			$msg =  '<strong>' . $sac_plugin . '</strong> ' . __('requires WordPress 3.7 or higher, and has been deactivated!', 'sac') . '<br />';
+	global $wp_version, $sac_path, $sac_plugin, $sac_wp_vers;
+	$plugin = plugin_basename(__FILE__);
+	if (version_compare($wp_version, $sac_wp_vers, '<')) {
+		if (is_plugin_active($plugin)) {
+			deactivate_plugins($plugin);
+			$msg =  '<strong>' . $sac_plugin . '</strong> ' . __('requires WordPress ', 'sac') . $sac_wp_vers . __(' or higher, and has been deactivated!', 'sac') . '<br />';
 			$msg .= __('Please return to the', 'sac') . ' <a href="' . admin_url() . '">' . __('WordPress Admin area', 'sac') . '</a> ' . __('to upgrade WordPress and try again.', 'sac');
 			wp_die($msg);
 		}
 	}
 }
-if (isset($_GET['activate']) && $_GET['activate'] == 'true') add_action('admin_init', 'sac_require_wp_version');
-
-
+if (isset($_GET['activate']) && $_GET['activate'] == 'true') {
+	add_action('admin_init', 'sac_require_wp_version');
+}
 
 // install DB table
 function sac_create_table() {
-	global $wpdb, $user_level, $sac_admin_user_level;
-	if ($user_level < $sac_admin_user_level) return;
+	global $wpdb;
+	
+	if (!current_user_can('activate_plugins')) return;
 	
 	$table_name = $wpdb->prefix . 'ajax_chat';
 	$check_table = $wpdb->get_var("SHOW TABLES LIKE '$table_name'");
@@ -89,7 +87,7 @@ function sac_create_table() {
 		$welcome_name = "The Admin";
 		$welcome_ip   = sac_get_ip_address();
 		$welcome_text = __('High five! You&rsquo;ve successfully installed Simple Ajax Chat.', 'sac');
-		$wpdb->query("INSERT INTO " . $table_name . " (time, name, text) VALUES ('" . time() . "','" . $welcome_name . "','" . $welcome_text . "')");
+		$wpdb->query("INSERT INTO " . $table_name . " (time, name, text) VALUES ('" . current_time('timestamp') . "','" . $welcome_name . "','" . $welcome_text . "')");
 	}
 }
 if (isset($_GET['activate']) && $_GET['activate'] == 'true') add_action('init', 'sac_create_table');
@@ -159,15 +157,13 @@ function sac_shout_truncate() {
 		if ($sac_script_url === '') $sac_script_url = site_url();
 
 		$wpdb->query("TRUNCATE TABLE " . $table_prefix . "ajax_chat");
-		$wpdb->query("INSERT INTO " . $table_prefix . "ajax_chat (time, name, text, url, ip) VALUES ('". time() ."','". $default_handle ."','". $default_message ."','". $sac_script_url ."','". $ip ."')");
+		$wpdb->query("INSERT INTO " . $table_prefix . "ajax_chat (time, name, text, url, ip) VALUES ('". current_time('timestamp') ."','". $default_handle ."','". $default_message ."','". $sac_script_url ."','". $ip ."')");
 
 		$redirect = add_query_arg(array('sac_truncate'=>false, 'sac_truncate_success'=>'true'), admin_url('options-general.php?page=' . $sac_path));
 		wp_redirect($redirect);
 	}
 }
 if ((isset($_GET['sac_truncate']))) add_action('init', 'sac_shout_truncate');
-
-
 
 // display settings link on plugin page
 function sac_plugin_action_links($links) {
@@ -253,7 +249,7 @@ function sac_time_since($original) {
 		array(60 ,                 __('minute', 'sac')), 
 	);
 	$original = $original - 10; // fixes bug where $time & $original match
-	$today = time(); // current unix time
+	$today = current_time('timestamp'); // current unix time
 	$since = $today - $original;
 
 	for ($i = 0, $j = count($chunks); $i < $j; $i++) {
@@ -284,5 +280,3 @@ if ($sacGetChat == "yes" || $sacSendChat == "yes") {
 	header("Content-Type: text/html; charset=utf-8");
 	if (!$sac_lastID) $sac_lastID = 0;
 }
-
-

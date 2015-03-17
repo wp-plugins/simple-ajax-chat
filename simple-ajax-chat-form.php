@@ -7,7 +7,7 @@ session_start();
 
 function simple_ajax_chat() {
 	
-	global $wpdb, $table_prefix, $user_level, $user_ID, $sac_path, $sac_number_of_comments, $sac_options; 
+	global $wpdb, $table_prefix, $user_ID, $sac_path, $sac_options; 
 	
 	$use_url         = $sac_options['sac_use_url'];
 	$use_textarea    = $sac_options['sac_use_textarea'];
@@ -35,12 +35,11 @@ function simple_ajax_chat() {
 	$custom_form_app = '';
 	if ($sac_options['sac_form_append'] !== '') $custom_form_app = $sac_options['sac_form_append'];
 	
-	
 	if (($registered_only && current_user_can('read')) || (!$registered_only)) {
 		
 		$current_user = wp_get_current_user();
 		$logged_username = sanitize_text_field($current_user->display_name);
-		$results = $wpdb->get_results($wpdb->prepare("SELECT * FROM ". $table_prefix ."ajax_chat ORDER BY id ". $display_order ." LIMIT %d", $sac_number_of_comments));
+		$results = $wpdb->get_results($wpdb->prepare("SELECT * FROM ". $table_prefix ."ajax_chat ORDER BY id DESC LIMIT %d", $sac_options['max_chats']));
 		
 		echo '<div id="simple-ajax-chat">';
 		
@@ -50,6 +49,8 @@ function simple_ajax_chat() {
 		echo '<div id="sac-output">';
 			
 		$sac_first_time = true;
+		$sac_output     = '';
+		$sac_lastout    = '';
 			
 		if ($results) {
 			foreach($results as $r) { 
@@ -61,38 +62,39 @@ function simple_ajax_chat() {
 				$chat_name = sanitize_text_field($r->name);
 				
 				$name_class = preg_replace("/[\s]+/", "-", $chat_name);
-				$chat_text  = preg_replace("`(http|ftp)+(s)?:(//)((\w|\.|\-|_)+)(/)?(\S+)?`i", "<a href=\"\\0\" target=\"_blank\" title=\"Open link in new tab\">\\0\</a>", $chat_text);
+				
+				$pattern = "/(http|https|ftp|ftps)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(\/\S*)?/";
+				$chat_text = preg_replace($pattern, '<a target="_blank" href="\\0" title="Open link in new tab">\\0</a>', $chat_text);
 				
 				if ($sac_first_time == true) $lastID = $chat_id;
 				
 				if ($use_url) $url = (empty($chat_url) && $chat_url = "http://") ? $chat_name : '<a href="'. $chat_url .'" target="_blank">'. $chat_name .'</a>';
 				else $url = $chat_name;
-					
-				if ($sac_first_time == true) : ?>
-					
-					<div id="sac-latest-message">
-						<span><?php _e('Latest Message:', 'sac'); ?></span> <em id="responseTime"><?php echo sac_time_since($chat_time) .' '. __('ago', 'sac'); ?></em>
-					</div>
-					<ul id="sac-messages">
-					
-				<?php endif; ?>
-						
-					<li class="sac-chat-message sac-static sac-user-<?php echo $name_class; ?>">
-						<span title="Posted <?php echo sac_time_since($chat_time) .' '. __('ago', 'sac'); ?>"><?php echo $url; ?> : </span> <?php echo convert_smilies(' '. $chat_text); ?>
-					</li> 
-						
-				<?php $sac_first_time = false;
+				
+				if ($sac_first_time == true) {
+					$sac_lastout = '<div id="sac-latest-message"><span>'. __('Latest Message:', 'sac') .'</span> <em id="responseTime">'. sac_time_since($chat_time) .' '. __('ago', 'sac') .'</em></div>'."\n";
+				} 
+				
+				$sac_out  = '<li class="sac-chat-message sac-static sac-user-'. $name_class .'" data-time="'. date('Y-m-d,H:i:s', $chat_time) .'">'."\n";
+				$sac_out .= '<span title="Posted '. sac_time_since($chat_time) .' '. __('ago', 'sac') .'">'. $url . ' : </span> '. convert_smilies(' '. $chat_text) .'</li>'."\n";
+				
+				if ($chat_order) $sac_output  = $sac_out . $sac_output;
+				else             $sac_output .= $sac_out;
+				
+				$sac_first_time = false;
 			}
 		} else {
-			echo '<ul id="sac-messages">';
-			echo '<li>You need <strong>at least one entry</strong> in the chat forum!</li>';
+			$sac_output .= '<li>You need <strong>at least one entry</strong> in the chat forum!</li>';
 		} 
-		echo '</ul>';
+		$sac_output = '<ul id="sac-messages">'. "\n" . $sac_output . '</ul>'."\n";
+		
+		if ($chat_order) echo $sac_output . $sac_lastout;
+		else             echo $sac_lastout . $sac_output;
+		
 		echo '</div>';
 		
 		echo $custom_chat_app;
 		echo $custom_form_pre; ?>
-		
 		
 		<div id="sac-panel">
 			<form id="sac-form" method="post" action="<?php echo plugins_url(); ?>/<?php echo $sac_path; ?>">
@@ -132,7 +134,7 @@ function simple_ajax_chat() {
 					<label for="sac_chat"><?php _e('Message', 'sac') ?>: </label>
 					<?php if ($use_textarea) : ?>
 					
-					<textarea name="sac_chat" id="sac_chat" rows="3" onkeypress="return pressedEnter(this,event);" placeholder="<?php _e('Message', 'sac') ?>"></textarea>
+					<textarea name="sac_chat" id="sac_chat" rows="5" cols="50" onkeypress="return pressedEnter(this,event);" placeholder="<?php _e('Message', 'sac') ?>"></textarea>
 					<?php else : ?>
 					
 					<input type="text" name="sac_chat" id="sac_chat" />
@@ -156,7 +158,6 @@ function simple_ajax_chat() {
 			<!-- Simple Ajax Chat @ http://perishablepress.com/simple-ajax-chat/ -->
 		</div>
 		
-		
 		<?php echo $custom_form_app;
 		
 		if ($play_sound == true) : 
@@ -169,7 +170,6 @@ function simple_ajax_chat() {
 			</audio>
 			
 		<?php endif;
-	
 	
 	} else { // login required
 
@@ -185,4 +185,3 @@ function simple_ajax_chat() {
 	echo '</div>';
 	echo $custom_styles;
 }
-

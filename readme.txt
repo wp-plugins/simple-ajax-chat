@@ -3,17 +3,18 @@
 Plugin Name: Simple Ajax Chat
 Plugin URI: http://perishablepress.com/simple-ajax-chat/
 Description: Displays a fully customizable Ajax-powered chat box anywhere on your site.
+Tags: chat, box, ajax, forum, private, avatars, filtering, smilies, secure, antispam, html5, messaging, im, instant message
 Author: Jeff Starr
 Author URI: http://monzilla.biz/
-Contributors: specialk
 Donate link: http://m0n.co/donate
-Requires at least: 3.7
-Tested up to: 4.0
-Version: 20140923
+Contributors: specialk
+Requires at least: 3.8
+Tested up to: 4.1
 Stable tag: trunk
+Version: 20150316
+Text Domain: sac
+Domain Path: /languages/
 License: GPL v2 or later
-Usage: Visit the plugin's settings page for shortcodes, template tags, and more information.
-Tags: chat, box, ajax, forum, private, avatars, filtering, smilies, secure, antispam, html5
 
 Simple Ajax Chat displays a fully customizable Ajax-powered chat box anywhere on your site.
 
@@ -118,6 +119,29 @@ Screenshots available at the [SAC Homepage](http://perishablepress.com/simple-aj
 Live Demo available at [WP-Mix](http://wp-mix.com/chat/).
 
 == Changelog ==
+
+= 20150316 =
+
+* Tested with latest version of WP (4.1)
+* Increased minimum version to WP 3.8
+* Added $sac_wp_vers for version check
+* Added Text Domain and Domain Path to file header
+* Removed deprecated screen_icon()
+* Added alert notice for donations
+* Streamline/fine-tune plugin code
+* Replaced time() with current_time() throughout plugin
+* Added timestamp for each chat via data-time attribute
+* Replace $user_level and $sac_admin_user_level with current_user_can()
+* New feature: option to set max number of allowed chats
+* New feature: option to set max number of characters per chat
+* New feature: option to set max number of characters in username
+* Replaced hard-coded values for max chats/chars/name with options
+* Revamped chat-order functionality (Thanks to MartinW2)
+* Added line breaks to initJavaScript()
+* Added rows="5" cols="50" to chat message textarea
+* Updated auto-link regex, fixes backslash appended to URL
+* Think I fixed the backslash-before-apostrophes issue, let me know!
+* Replaced default .mo/.po templates with .pot template
 
 = 20140923 =
 
@@ -268,6 +292,11 @@ To ask a question, visit the [SAC Homepage](http://perishablepress.com/simple-aj
 
 == Donations ==
 
-I created this plugin with love for the WP community. To show support, consider purchasing one of my books: [The Tao of WordPress](http://wp-tao.com/), [Digging into WordPress](http://digwp.com/), or [.htaccess made easy](http://htaccessbook.com/).
+I created this plugin with love for the WP community. To show support, you can [make a donation](http://m0n.co/donate) or purchase one of my books: 
+
+* [The Tao of WordPress](http://wp-tao.com/)
+* [Digging into WordPress](http://digwp.com/)
+* [.htaccess made easy](http://htaccessbook.com/)
+* [WordPress Themes In Depth](http://wp-tao.com/wordpress-themes-book/)
 
 Links, tweets and likes also appreciated. Thanks! :)

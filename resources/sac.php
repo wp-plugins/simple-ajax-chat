@@ -1,8 +1,8 @@
 <?php // Simple Ajax Chat > JavaScript
 
 	header("Cache-Control: must-revalidate");
-	$offset = 60*60*24*60;
-	$ExpStr = "Expires: ".gmdate("D, d M Y H:i:s",time() + $offset)." GMT";
+	$offset = 60 * 60 * 24 * 60;
+	$ExpStr = "Expires: ". gmdate("D, d M Y H:i:s", time() + $offset) ." GMT";
 	header($ExpStr);
 	header('Content-Type: application/javascript');
 	
@@ -34,7 +34,11 @@ function filter_smilies(s){
 }
 
 // links
-function make_links(s){ var re = /((http|https|ftp):\/\/[^ ]*)/gi; text = s.replace(re,"<a href=\"$1\" target=\"_blank\" class=\"sac-chat-link\">&laquo;link&raquo;</a>"); return text; }
+function make_links(s){
+	var re = /((http|https|ftp):\/\/[^ ]*)/gi; 
+	text = s.replace(re, '<a target="_blank" href="$1" class="sac-chat-link">&laquo;link&raquo;</a>');
+	return text;
+}
 
 // sound alerts
 var myBox = new Object();
@@ -51,7 +55,41 @@ var GetChaturl = "<?php echo plugins_url('simple-ajax-chat/simple-ajax-chat.php?
 var SendChaturl = "<?php echo plugins_url('simple-ajax-chat/simple-ajax-chat.php?sacSendChat=yes'); ?>";
 var httpReceiveChat;
 var httpSendChat;
-function initJavaScript(){if(!document.getElementById("sac_chat")){return}document.forms["sac-form"].elements.sac_chat.setAttribute("autocomplete","off");checkStatus("");checkName();checkUrl();sac_loadtimes=1;httpReceiveChat=getHTTPObject();httpSendChat=getHTTPObject();setTimeout("receiveChatText()",sac_timeout);document.getElementById("sac_name").onblur=checkName;document.getElementById("sac_url").onblur=checkUrl;document.getElementById("sac_chat").onfocus=function(){checkStatus("active")};document.getElementById("sac_chat").onblur=function(){checkStatus("")};document.getElementById("submitchat").onclick=sendComment;document.getElementById("sac-form").onsubmit=function(){return false};document.getElementById("sac-output").onmouseover=function(){if(sac_loadtimes>9){sac_loadtimes=1;receiveChatText()}sac_timeout=sac_org_timeout}};
+
+function initJavaScript(){
+	if (!document.getElementById('sac_chat')) return;
+	document.forms['sac-form'].elements.sac_chat.setAttribute('autocomplete', 'off');
+	checkStatus('');
+	checkName();
+	checkUrl();
+	sac_loadtimes = 1;
+	httpReceiveChat = getHTTPObject();
+	httpSendChat = getHTTPObject();
+	setTimeout('receiveChatText()', sac_timeout);
+	document.getElementById('sac_name').onblur = checkName;
+	document.getElementById('sac_url').onblur = checkUrl;
+	document.getElementById('sac_chat').onfocus = function(){
+		checkStatus('active');
+	};
+	document.getElementById('sac_chat').onblur = function(){
+		checkStatus('');
+	};
+	document.getElementById('submitchat').onclick = sendComment;
+	document.getElementById('sac-form').onsubmit = function(){
+		return false;
+	};
+	document.getElementById('sac-output').onmouseover = function(){
+		if (sac_loadtimes > 9){
+			sac_loadtimes = 1;
+			receiveChatText();
+		}
+		sac_timeout = sac_org_timeout;
+	}
+	<?php if ($sac_options['sac_chat_order']) : ?>
+	jQuery('#sac-output').animate({ scrollTop: jQuery('#sac-output').prop('scrollHeight') }, 300);
+	<?php endif; ?>
+};
+
 function receiveChatText(){sac_lastID=parseInt(document.getElementById("sac_lastID").value)-1;if(httpReceiveChat.readyState==4||httpReceiveChat.readyState==0){httpReceiveChat.open("GET",GetChaturl+"&sac_lastID="+sac_lastID+"&rand="+Math.floor(Math.random()*1000000),true);httpReceiveChat.onreadystatechange=handlehHttpReceiveChat;httpReceiveChat.send(null);sac_loadtimes++;if(sac_loadtimes>9){sac_timeout=sac_timeout*5/4}}setTimeout("receiveChatText()",sac_timeout)}function handlehHttpReceiveChat(){if(httpReceiveChat.readyState==4){results=httpReceiveChat.responseText.split("---");if(results.length>4){for(i=0;i<(results.length-1);i=i+5){insertNewContent(results[i+1],results[i+2],results[i+3],results[i+4],results[i]);document.getElementById("sac_lastID").value=parseInt(results[i])+1}sac_timeout=sac_org_timeout;sac_loadtimes=1}}};
 function sendComment(){currentChatText=document.forms["sac-form"].elements.sac_chat.value;if(httpSendChat.readyState==4||httpSendChat.readyState==0){if(currentChatText==""){return}currentName=document.getElementById("sac_name").value;currentUrl=document.getElementById("sac_url").value;param="n="+encodeURIComponent(currentName)+"&c="+encodeURIComponent(currentChatText)+"&u="+encodeURIComponent(currentUrl);httpSendChat.open("POST",SendChaturl,true);httpSendChat.setRequestHeader("Content-Type","application/x-www-form-urlencoded");httpSendChat.onreadystatechange=receiveChatText;httpSendChat.send(param);document.forms["sac-form"].elements.sac_chat.value=""}};
 //
@@ -65,17 +103,30 @@ function insertNewContent(liName,liText,lastResponse, liUrl, liId){
 
 	oLi = document.createElement('li');
 	oLi.setAttribute('id','comment-new'+liId);
-	oSpan = document.createElement('span');
-	oSpan.setAttribute('class','name');
-	// date
-	Date.prototype.today = function() {
-		return this.getFullYear() + "/" + (((this.getMonth()+1) < 10)?"0":"") + (this.getMonth()+1) + "/" + ((this.getDate() < 10)?"0":"") + this.getDate();
+	
+	// li date
+	Date.prototype.date = function() {
+		return this.getFullYear() + "-" + (((this.getMonth()+1) < 10)?"0":"") + (this.getMonth()+1) + "-" + ((this.getDate() < 10)?"0":"") + this.getDate();
 	};
-	// time
-	Date.prototype.timeNow = function() {
+	// li time
+	Date.prototype.time = function() {
 		return ((this.getHours() < 10)?"0":"") + this.getHours() + ":" + ((this.getMinutes() < 10)?"0":"") + this.getMinutes() + ":" + ((this.getSeconds() < 10)?"0":"") + this.getSeconds();
 	};
 	var newDate = new Date();
+	var timestamp = newDate.date() + ',' + newDate.time();
+	oLi.setAttribute('data-time',timestamp);
+	
+	oSpan = document.createElement('span');
+	oSpan.setAttribute('class','name');
+	
+	// span date
+	Date.prototype.today = function() {
+		return this.getFullYear() + "/" + (((this.getMonth()+1) < 10)?"0":"") + (this.getMonth()+1) + "/" + ((this.getDate() < 10)?"0":"") + this.getDate();
+	};
+	// span time
+	Date.prototype.timeNow = function() {
+		return ((this.getHours() < 10)?"0":"") + this.getHours() + ":" + ((this.getMinutes() < 10)?"0":"") + this.getMinutes() + ":" + ((this.getSeconds() < 10)?"0":"") + this.getSeconds();
+	};
 	var datetime = "<?php _e('Posted:', 'sac'); ?> " + newDate.today() + " @ " + newDate.timeNow();
 	oSpan.setAttribute('title', datetime);
 	oName = document.createTextNode(liName);
@@ -169,7 +220,7 @@ function checkUrl(){
 
 // ajax
 function getHTTPObject(){var xmlhttp;
-/*@cc_on
+	/*@cc_on
 		@if (@_jscript_version >= 5)
 		try {
 			xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");

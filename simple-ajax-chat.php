@@ -75,8 +75,8 @@ if ((isset($sac_match)) && ($sac_match !== null) && ($sac_match !== 0) && ($sac_
 							sac_addData($sac_name, $sac_chat, $sac_url);
 							sac_deleteOld();
 
-							setcookie("sacUserName", $sac_name, time() + 60 * 60 * 24 * 30 * 3, '/');
-							setcookie("sacUrl", $sac_url, time() + 60 * 60 * 24 * 30 * 3, '/');
+							setcookie("sacUserName", $sac_name, current_time('timestamp') + 60 * 60 * 24 * 30 * 3, '/');
+							setcookie("sacUrl", $sac_url, current_time('timestamp') + 60 * 60 * 24 * 30 * 3, '/');
 							header('location: ' . $referrer);
 						} else {
 							_e('Name and comment required.', 'sac');
@@ -92,12 +92,12 @@ if ((isset($sac_match)) && ($sac_match !== null) && ($sac_match !== 0) && ($sac_
 
 // process chat data
 function sac_addData($sac_user_name, $sac_user_text, $sac_user_url) {
-	global $wpdb, $table_prefix, $sac_number_of_characters, $sac_username_length, $sac_options;
+	global $wpdb, $table_prefix, $sac_options;
 	
-	$sac_user_text = substr(trim($sac_user_text), 0, $sac_number_of_characters);
+	$sac_user_text = substr(trim($sac_user_text), 0, $sac_options['max_chars']);
 	$sac_user_text = (empty($sac_user_text)) ? '' : sac_special_chars($sac_user_text);
 	
-	$sac_user_name = substr(trim($sac_user_name), 0, $sac_username_length);
+	$sac_user_name = substr(trim($sac_user_name), 0, $sac_options['max_uname']);
 	$sac_user_name = (empty($sac_user_name)) ? 'Anonymous' : sanitize_text_field($sac_user_name);
 	
 	$use_username  = $sac_options['sac_logged_name'];
@@ -127,14 +127,14 @@ function sac_addData($sac_user_name, $sac_user_text, $sac_user_url) {
 		}
 	}
 	$ip = sac_get_ip_address();
-	$wpdb->insert($table_prefix . "ajax_chat", array('time'=>time(), 'name'=>$sac_user_name, 'text'=>$sac_user_text, 'url'=>$sac_user_url, 'ip'=>$ip));
+	$wpdb->insert($table_prefix . "ajax_chat", array('time'=>current_time('timestamp'), 'name'=>$sac_user_name, 'text'=>$sac_user_text, 'url'=>$sac_user_url, 'ip'=>$ip));
 }
 
 // clean up database
 function sac_deleteOld() {
-	global $wpdb, $table_prefix, $sac_number_of_comments;
+	global $wpdb, $table_prefix, $sac_options;
 	$a = intval($wpdb->insert_id);
-	$b = intval($sac_number_of_comments);
+	$b = intval($sac_options['max_chats']);
 	if (($a - $b) > $b) {
 		$c = $a - $b;
 		$wpdb->query($wpdb->prepare("DELETE FROM " . $table_prefix . "ajax_chat WHERE id < $c"));
@@ -142,5 +142,3 @@ function sac_deleteOld() {
 }
 
 exit();
-
-
