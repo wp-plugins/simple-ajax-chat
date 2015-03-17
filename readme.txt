@@ -20,6 +20,8 @@ Simple Ajax Chat displays a fully customizable Ajax-powered chat box anywhere on
 
 == Description ==
 
+IMPORTANT: if you are upgrading from a previous version of SAC, please read the upgrade instructions
+
 Simple Ajax Chat makes it easy for your visitors to chat with each other on your website. There already are a number of decent chat plugins, but I wanted one that is simple yet fully customizable with all the features AND outputs clean HTML markup.
 
 **Features**
@@ -72,6 +74,16 @@ Activate the plugin and visit the SAC settings page to customize your options.
 Once everything is customized as you like it, display the form anywhere using the shortcode or template tag.
 
 **Upgrading**
+
+IMPORTANT: the time functionality has been upgraded in the latest version of the plugin. As a result, all chat messages will be deleted when the plugin is upgraded to the latest version. If you want to save your current chats, please make a backup BEFORE upgrading.
+
+ALSO: After upgrading, if your chat box displays something like "you need at least one message.." do the following:
+
+1. Backup or make a note of your chat settings (so you can restore them)
+2. Click the "Restore default settings" button
+3. Reconfigure your settings and done
+
+Apologies for the inconvenience, but the plugin is better off using WP time functionality.
 
 If you are upgrading the plugin, be sure to backup your existing SAC settings (as a precaution). 
 
