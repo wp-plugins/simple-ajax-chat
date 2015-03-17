@@ -67,17 +67,17 @@ Simple Ajax Chat makes it easy for your visitors to chat with each other on your
 
 == Installation ==
 
-**Installation**
+=Installation=
 
 Activate the plugin and visit the SAC settings page to customize your options.
 
 Once everything is customized as you like it, display the form anywhere using the shortcode or template tag.
 
-**Upgrading**
+=Upgrading=
 
-IMPORTANT: the time functionality has been upgraded in the latest version of the plugin. As a result, all chat messages will be deleted when the plugin is upgraded to the latest version. If you want to save your current chats, please make a backup BEFORE upgrading.
+*IMPORTANT:* the time functionality has been upgraded in the latest version of the plugin. As a result, all chat messages will be deleted when the plugin is upgraded to the latest version. If you want to save your current chats, please make a backup BEFORE upgrading.
 
-ALSO: After upgrading, if your chat box displays something like "you need at least one message.." do the following:
+*ALSO:* After upgrading, if your chat box displays something like "you need at least one message.." do the following:
 
 1. Backup or make a note of your chat settings (so you can restore them)
 2. Click the "Restore default settings" button
@@ -85,23 +85,19 @@ ALSO: After upgrading, if your chat box displays something like "you need at lea
 
 Apologies for the inconvenience, but the plugin is better off using WP time functionality.
 
-If you are upgrading the plugin, be sure to backup your existing SAC settings (as a precaution). 
-
-Then upgrade normally, check that the settings are good, and delete the plugin's only `/images/` directory. Done.
-
-**Shortcode**
+=Shortcode=
 
 Use this shortcode to display the chat box on a post or page:
 
 `[sac_happens]`
 
-**Template tag**
+=Template tag=
 
 Use this template tag to display the chat box anywhere in your theme template:
 
 `&lt;?php if (function_exists('simple_ajax_chat')) simple_ajax_chat(); ?&gt;`
 
-**Stopping spam**
+=Stopping spam=
 
 This plugin works in two modes:
 
@@ -114,15 +110,11 @@ If you absolutely don't want any spam, run the plugin in "private" mode. In priv
 
 Alternately/optionally you may use the included .htaccess file to add some simple rules to block users by IP and other variables.
 
-**Other notes**
+=Other notes=
 
 If the chat form looks messed up on your theme, try disabling the checkbox for "Enable custom styles?"
 
 If that doesn't help, you can include your own custom CSS. To do so, replace the "Custom CSS styles" with your own, and then enable the "Enable custom styles?" setting. Alternately, you may include custom CSS via your theme's stylesheet.
-
-== Upgrade Notice ==
-
-To upgrade, simply upload the new version and you should be good to go.
 
 == Screenshots ==
 
