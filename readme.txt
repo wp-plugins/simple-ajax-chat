@@ -20,7 +20,7 @@ Simple Ajax Chat displays a fully customizable Ajax-powered chat box anywhere on
 
 == Description ==
 
-__IMPORTANT:__ if you are upgrading from a previous version of SAC, please read the [upgrade instructions](https://wordpress.org/plugins/simple-ajax-chat/installation/)
+__IMPORTANT:__ if you are upgrading from a previous version of Simple Ajax Chat, please read the [upgrade instructions](https://wordpress.org/plugins/simple-ajax-chat/installation/)
 
 Simple Ajax Chat makes it easy for your visitors to chat with each other on your website. There already are a number of decent chat plugins, but I wanted one that is simple yet fully customizable with all the features AND outputs clean HTML markup.
 
