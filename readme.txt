@@ -79,7 +79,7 @@ Once everything is customized as you like it, display the form anywhere using th
 
 __IMPORTANT:__ the time functionality has been upgraded in version 20150316. As a result, all chat messages will be deleted when the plugin is upgraded to the latest version. If you want to save your current chats, please make a backup BEFORE upgrading. This applies only to people who are upgrading from a version less than 20150316.
 
-__ALSO:__ After upgrading from a version less than 20150316, if your chat box displays something like "you need at least one message..", do the following:
+__ALSO:__ After upgrading, if your chat box displays something like "you need at least one message..", do the following:
 
 1. Backup or make a note of your chat settings (so you can restore them)
 2. Click the "Restore default settings" button
