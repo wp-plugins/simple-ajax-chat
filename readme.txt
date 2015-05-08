@@ -1,17 +1,17 @@
 === Simple Ajax Chat ===
 
 Plugin Name: Simple Ajax Chat
-Plugin URI: http://perishablepress.com/simple-ajax-chat/
+Plugin URI: https://perishablepress.com/simple-ajax-chat/
 Description: Displays a fully customizable Ajax-powered chat box anywhere on your site.
 Tags: chat, box, ajax, forum, private, avatars, filtering, smilies, secure, antispam, html5, messaging, im, instant message
 Author: Jeff Starr
 Author URI: http://monzilla.biz/
 Donate link: http://m0n.co/donate
 Contributors: specialk
-Requires at least: 3.8
-Tested up to: 4.1
+Requires at least: 3.9
+Tested up to: 4.2
 Stable tag: trunk
-Version: 20150316
+Version: 20150507
 Text Domain: sac
 Domain Path: /languages/
 License: GPL v2 or later
@@ -73,6 +73,8 @@ Activate the plugin and visit the SAC settings page to customize your options.
 
 Once everything is customized as you like it, display the form anywhere using the shortcode or template tag.
 
+[More info on installing WP plugins](http://codex.wordpress.org/Managing_Plugins#Installing_Plugins)
+
 = Upgrading =
 
 __IMPORTANT:__ the time functionality has been upgraded in the latest version of the plugin. As a result, all chat messages will be deleted when the plugin is upgraded to the latest version. If you want to save your current chats, please make a backup BEFORE upgrading.
@@ -116,6 +118,8 @@ If the chat form looks messed up on your theme, try disabling the checkbox for "
 
 If that doesn't help, you can include your own custom CSS. To do so, replace the "Custom CSS styles" with your own, and then enable the "Enable custom styles?" setting. Alternately, you may include custom CSS via your theme's stylesheet.
 
+If your site's `wp-blog-header.php` and `wp-config.php` are not located in the usual default location (i.e., you have moved them to a custom location), you will need to edit the paths in `/simple-ajax-chat.php` (line 4) and `/resources/sac.php` (line 9). At some point I will be revamping the way that these files are included so that this modification won't be necessary.
+
 == Upgrade Notice ==
 
 __IMPORTANT:__ the time functionality has been upgraded in the latest version of the plugin. As a result, all chat messages will be deleted when the plugin is upgraded to the latest version. If you want to save your current chats, please make a backup BEFORE upgrading.
@@ -130,11 +134,24 @@ Apologies for the inconvenience, but the plugin is better off using WP time func
 
 == Screenshots ==
 
-Screenshots available at the [SAC Homepage](http://perishablepress.com/simple-ajax-chat/#screenshots).
+Screenshots available at the [SAC Homepage](https://perishablepress.com/simple-ajax-chat/#screenshots).
 
-Live Demo available at [WP-Mix](http://wp-mix.com/chat/).
+Live Demo available at [WP-Mix](https://wp-mix.com/chat/).
 
 == Changelog ==
+
+= 20150507 =
+
+* Tested with WP 4.2 + 4.3 (alpha)
+* Changed a few "http" links to "https"
+* Fixed XSS vulnerability with add_query_arg()
+* Added primary key flag to create database function
+* Bugfix: form not submitting when JavaScript disabled
+* Improved logic in simple-ajax-chat.php
+* Added nonce security to chat form
+* Added support for SSL/https
+* Added sac_censor_replace filter to customize censored words
+* Added isset() to stop PHP warning
 
 = 20150316 =
 
@@ -286,7 +303,7 @@ Live Demo available at [WP-Mix](http://wp-mix.com/chat/).
 
 Question: "Can we auto delete after some minutes all the chats?"
 
-Answer: Yes, please see this post: [WordPress Cron Tips](http://wp-mix.com/wordpress-cron-tips/)
+Answer: Yes, please see this post: [WordPress Cron Tips](https://wp-mix.com/wordpress-cron-tips/)
 
 Question: "I'm interested to know if your chat plugin has the option to respond to chats via an iPhone app or another chat software. I didn't see how the chats are received."
 
@@ -302,17 +319,17 @@ Answer: This is possible by editing the variables in `simple-ajax-core.php` (see
 
 Question: "Is it possible to whitelist SAC plugin files?"
 
-Answer: Yes, check out [Simple Ajax Chat .htaccess whitelist](http://wp-mix.com/simple-ajax-chat-htaccess-whitelist/) and/or [Whitelist POST access with .htaccess](http://wp-mix.com/whitelist-post-access-htaccess/)
+Answer: Yes, check out [Simple Ajax Chat .htaccess whitelist](https://wp-mix.com/simple-ajax-chat-htaccess-whitelist/) and/or [Whitelist POST access with .htaccess](https://wp-mix.com/whitelist-post-access-htaccess/)
 
-To ask a question, visit the [SAC Homepage](http://perishablepress.com/simple-ajax-chat/) or [contact me](http://perishablepress.com/contact/).
+To ask a question, visit the [SAC Homepage](https://perishablepress.com/simple-ajax-chat/) or [contact me](https://perishablepress.com/contact/).
 
 == Donations ==
 
 I created this plugin with love for the WP community. To show support, you can [make a donation](http://m0n.co/donate) or purchase one of my books: 
 
-* [The Tao of WordPress](http://wp-tao.com/)
-* [Digging into WordPress](http://digwp.com/)
-* [.htaccess made easy](http://htaccessbook.com/)
-* [WordPress Themes In Depth](http://wp-tao.com/wordpress-themes-book/)
+* [The Tao of WordPress](https://wp-tao.com/)
+* [Digging into WordPress](https://digwp.com/)
+* [.htaccess made easy](https://htaccessbook.com/)
+* [WordPress Themes In Depth](https://wp-tao.com/wordpress-themes-book/)
 
 Links, tweets and likes also appreciated. Thanks! :)

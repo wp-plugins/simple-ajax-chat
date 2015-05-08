@@ -1,17 +1,17 @@
 <?php 
 /*
 	Plugin Name: Simple Ajax Chat
-	Plugin URI: http://perishablepress.com/simple-ajax-chat/
+	Plugin URI: https://perishablepress.com/simple-ajax-chat/
 	Description: Displays a fully customizable Ajax-powered chat box anywhere on your site.
 	Tags: chat, box, ajax, forum, private, avatars, filtering, smilies, secure, antispam, html5, messaging, im, instant message
 	Author: Jeff Starr
 	Author URI: http://monzilla.biz/
 	Donate link: http://m0n.co/donate
 	Contributors: specialk
-	Requires at least: 3.8
-	Tested up to: 4.1
+	Requires at least: 3.9
+	Tested up to: 4.2
 	Stable tag: trunk
-	Version: 20150316
+	Version: 20150507
 	Text Domain: sac
 	Domain Path: /languages/
 	License: GPL v2 or later
@@ -19,20 +19,21 @@
 
 if (!function_exists('add_action')) die();
 
-$sac_wp_vers = '3.8';
-$sac_version = '20150316';
+$sac_wp_vers = '3.9';
+$sac_version = '20150507';
 $sac_plugin  = 'Simple Ajax Chat';
 $sac_path    = 'simple-ajax-chat/simple-ajax-chat-admin.php';
-$sac_homeurl = 'http://perishablepress.com/simple-ajax-chat/';
+$sac_homeurl = 'https://perishablepress.com/simple-ajax-chat/';
 
-$sac_lastID = isset($_GET['sac_lastID']) ? $_GET['sac_lastID'] : "";
+$sac_lastID  = isset($_GET['sac_lastID'])  ? $_GET['sac_lastID']  : '';
+$sacGetChat  = isset($_GET['sacGetChat'])  ? $_GET['sacGetChat']  : '';
+$sacSendChat = isset($_GET['sacSendChat']) ? $_GET['sacSendChat'] : '';
 
-$sac_user_name = isset($_POST['n']) ? $_POST['n'] : ""; 
-$sac_user_url  = isset($_POST['u']) ? $_POST['u'] : "";
-$sac_user_text = isset($_POST['c']) ? $_POST['c'] : "";
+$sac_nonce = isset($_POST['sac_nonce']) ? $_POST['sac_nonce'] : '';
 
-$sacGetChat  = isset($_GET['sacGetChat'])  ? $_GET['sacGetChat']  : "";
-$sacSendChat = isset($_GET['sacSendChat']) ? $_GET['sacSendChat'] : "";
+$sac_user_name  = isset($_POST['n']) ? $_POST['n'] : ''; 
+$sac_user_url   = isset($_POST['u']) ? $_POST['u'] : '';
+$sac_user_text  = isset($_POST['c']) ? $_POST['c'] : '';
 
 require_once(dirname(__FILE__) . '/simple-ajax-chat-admin.php');
 require_once(dirname(__FILE__) . '/simple-ajax-chat-form.php');
@@ -73,7 +74,7 @@ function sac_create_table() {
 	
 	if ($check_table != $table_name) {
 		$sql = "CREATE TABLE " . $table_name . " (
-			id mediumint(7) NOT NULL AUTO_INCREMENT, 
+			id mediumint(7) NOT NULL AUTO_INCREMENT PRIMARY KEY, 
 			time bigint(11) DEFAULT '0' NOT NULL, 
 			name tinytext NOT NULL, 
 			text text NOT NULL, 
@@ -160,7 +161,7 @@ function sac_shout_truncate() {
 		$wpdb->query("INSERT INTO " . $table_prefix . "ajax_chat (time, name, text, url, ip) VALUES ('". current_time('timestamp') ."','". $default_handle ."','". $default_message ."','". $sac_script_url ."','". $ip ."')");
 
 		$redirect = add_query_arg(array('sac_truncate'=>false, 'sac_truncate_success'=>'true'), admin_url('options-general.php?page=' . $sac_path));
-		wp_redirect($redirect);
+		wp_redirect(esc_url_raw($redirect));
 	}
 }
 if ((isset($_GET['sac_truncate']))) add_action('init', 'sac_shout_truncate');
@@ -186,7 +187,11 @@ add_filter('plugin_row_meta', 'add_sac_links', 10, 2);
 function sac_add_to_head() {
 	global $sac_version, $sac_options;
 	$script_url  = $sac_options['sac_script_url'];
-	$current_url = trailingslashit('http://' . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"]);
+	
+	$protocol = 'http://';
+	if (is_ssl()) $protocol = 'https://';
+	$current_url = trailingslashit($protocol . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"]);
+	
 	if ($script_url !== '') {
 		if ($script_url == $current_url) {
 			echo "\t" . '<script type="text/javascript" src="' . plugins_url('resources/sac.php', __FILE__) . '"></script>' . "\n";

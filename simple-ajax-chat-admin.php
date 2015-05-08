@@ -75,7 +75,10 @@ if (isset($_POST['sac_restore'])) {
 	update_option('sac_options', $sac_default_options);
 	update_option('sac_censors', $sac_default_censors);
 	$fixed_uri = str_replace("options.php", "options-general.php", sanitize_text_field($_SERVER["REQUEST_URI"]));
-	header("Location: http://" . sanitize_text_field($_SERVER["HTTP_HOST"]) . $fixed_uri . "?page=" . $sac_path . "&sac_restore_success=true");
+	$protocol = 'http://';
+	if (is_ssl()) $protocol = 'https://';
+	$location = "Location: ". $protocol . sanitize_text_field($_SERVER["HTTP_HOST"]) . $fixed_uri . "?page=" . $sac_path . "&sac_restore_success=true";
+	header($location);
 }
 
 // whitelist settings
@@ -160,7 +163,7 @@ function sac_validate_options($input) {
 	return $input;
 }
 function sac_validate_options_censors($input) {
-	$input['sac_censors'] = wp_filter_nohtml_kses($input['sac_censors']);
+	if (isset($input['sac_censors'])) $input['sac_censors'] = wp_filter_nohtml_kses($input['sac_censors']);
 	return $input;
 }
 
@@ -273,19 +276,18 @@ function sac_render_form() {
 						<div class="toggle">
 							<div class="mm-panel-alert">
 								<p>
-									<strong><?php _e('Your support is needed to keep this plugin going.', 'sac'); ?></strong> 
+									<?php _e('Please', 'sac'); ?> <a target="_blank" href="http://m0n.co/donate" title="<?php _e('Make a donation via PayPal', 'sac'); ?>"><?php _e('make a donation', 'sac'); ?></a> <?php _e('and/or', 'sac'); ?> 
+									<a target="_blank" href="http://wordpress.org/support/view/plugin-reviews/<?php echo basename(dirname(__FILE__)); ?>?rate=5#postform" title="<?php _e('Rate and review at the Plugin Directory', 'sac'); ?>">
+										<?php _e('give it a 5-star rating', 'sac'); ?>&nbsp;&raquo;
+									</a>
 								</p>
 								<p>
-									<?php _e('If you use Simple Ajax Chat and would like development to continue, please', 'sac'); ?> 
-									<a target="_blank" href="http://m0n.co/donate"><?php _e('make a donation&nbsp;&raquo;', 'sac'); ?></a>
-								</p>
-								<p> 
-									<?php _e('Thank you to those who show support!', 'sac'); ?>
+									<?php _e('Your generous support enables continued development of this free plugin. Thank you!', 'sac'); ?>
 								</p>
 								<div class="dismiss-alert">
 									<div class="dismiss-alert-wrap">
 										<input class="input-alert" name="sac_options[version_alert]" type="checkbox" value="1" <?php if (isset($sac_options['version_alert'])) checked('1', $sac_options['version_alert']); ?> />  
-										<label class="description" for="sac_options[version_alert]"><?php _e('Check this box if you have made a donation', 'sac') ?></label>
+										<label class="description" for="sac_options[version_alert]"><?php _e('Check this box if you have shown support', 'sac') ?></label>
 									</div>
 								</div>
 							</div>
@@ -526,8 +528,12 @@ function sac_render_form() {
  
 									$sac_first_time = "yes";
 									foreach ($chats as $chat) {
-
-										$url = (empty($chat->url) && $chat->url = "http://") ? $chat->name : '<a href="' . $chat->url . '">' . $chat->name . '</a>';
+										
+										if (empty($chat->url) || $chat->url == "http://" || $chat->url == "https://") {
+											$url = $chat->name;
+										} else {
+											$url = '<a target="_blank" href="' . $chat->url . '">' . $chat->name . '</a>';
+										}
 										if ($sac_first_time == "yes") { ?>
 
 										<div><span><?php _e('Last Message', 'sac'); ?></span> <em><?php echo sac_time_since($chat->time) . ' ' . __('ago', 'sac'); ?></em></div>
@@ -606,7 +612,7 @@ function sac_render_form() {
 					<h3><?php _e('Updates &amp; Info', 'sac'); ?></h3>
 					<div class="toggle">
 						<div id="mm-iframe-wrap">
-							<iframe src="http://perishablepress.com/current/index-sac.html"></iframe>
+							<iframe src="https://perishablepress.com/current/index-sac.html"></iframe>
 						</div>
 					</div>
 				</div>
@@ -615,7 +621,7 @@ function sac_render_form() {
 		</div>
 		<div id="mm-credit-info">
 			<a target="_blank" href="<?php echo $sac_homeurl; ?>" title="<?php echo $sac_plugin; ?> Homepage"><?php echo $sac_plugin; ?></a> by 
-			<a target="_blank" href="http://twitter.com/perishable" title="Jeff Starr on Twitter">Jeff Starr</a> @ 
+			<a target="_blank" href="https://twitter.com/perishable" title="Jeff Starr on Twitter">Jeff Starr</a> @ 
 			<a target="_blank" href="http://monzilla.biz/" title="Obsessive Web Design &amp; Development">Monzilla Media</a>
 		</div>
 	</div>
@@ -659,7 +665,7 @@ function sac_render_form() {
 			}
 			// prevent accidents
 			jQuery("#mm_truncate_all").click(function(){
-				var r = confirm("<?php _e('Are you sure you want to delete alll chat messages? (this action cannot be undone)', 'sac'); ?>");
+				var r = confirm("<?php _e('Are you sure you want to delete all chat messages? (this action cannot be undone)', 'sac'); ?>");
 				if (r == true){
 					return true;
 				} else {

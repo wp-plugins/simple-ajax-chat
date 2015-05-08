@@ -68,8 +68,11 @@ function simple_ajax_chat() {
 				
 				if ($sac_first_time == true) $lastID = $chat_id;
 				
-				if ($use_url) $url = (empty($chat_url) && $chat_url = "http://") ? $chat_name : '<a href="'. $chat_url .'" target="_blank">'. $chat_name .'</a>';
-				else $url = $chat_name;
+				if (empty($chat_url) || $chat_url == "http://" || $chat_url == "https://") {
+					$url = $chat_name;
+				} else {
+					$url = '<a href="'. $chat_url .'" target="_blank">'. $chat_name .'</a>';
+				}
 				
 				if ($sac_first_time == true) {
 					$sac_lastout = '<div id="sac-latest-message"><span>'. __('Latest Message:', 'sac') .'</span> <em id="responseTime">'. sac_time_since($chat_time) .' '. __('ago', 'sac') .'</em></div>'."\n";
@@ -97,7 +100,7 @@ function simple_ajax_chat() {
 		echo $custom_form_pre; ?>
 		
 		<div id="sac-panel">
-			<form id="sac-form" method="post" action="<?php echo plugins_url(); ?>/<?php echo $sac_path; ?>">
+			<form id="sac-form" method="post" action="<?php echo plugins_url(); ?>/simple-ajax-chat/simple-ajax-chat.php">
 				
 				<?php if ($use_username && !empty($logged_username)) : ?>
 				
@@ -134,7 +137,7 @@ function simple_ajax_chat() {
 					<label for="sac_chat"><?php _e('Message', 'sac') ?>: </label>
 					<?php if ($use_textarea) : ?>
 					
-					<textarea name="sac_chat" id="sac_chat" rows="5" cols="50" onkeypress="return pressedEnter(this,event);" placeholder="<?php _e('Message', 'sac') ?>"></textarea>
+					<textarea name="sac_chat" id="sac_chat" rows="5" cols="50" onkeypress="if (typeof pressedEnter == 'function') return pressedEnter(this,event);" placeholder="<?php _e('Message', 'sac') ?>"></textarea>
 					<?php else : ?>
 					
 					<input type="text" name="sac_chat" id="sac_chat" />
@@ -152,10 +155,11 @@ function simple_ajax_chat() {
 					<input type="hidden" id="sac_lastID" value="<?php echo $lastID + 1; ?>" name="sac_lastID" />
 					<input type="hidden" name="sac_no_js" value="true" />
 					<input type="hidden" name="PHPSESSID" value="<?php echo session_id(); ?>" />
+					<?php wp_nonce_field('sac_nonce', 'sac_nonce', false); ?>
 				</div>
 			</form>
 			<script>(function(){var e = document.getElementById("sac_verify");e.parentNode.removeChild(e);})();</script>
-			<!-- Simple Ajax Chat @ http://perishablepress.com/simple-ajax-chat/ -->
+			<!-- Simple Ajax Chat @ https://perishablepress.com/simple-ajax-chat/ -->
 		</div>
 		
 		<?php echo $custom_form_app;

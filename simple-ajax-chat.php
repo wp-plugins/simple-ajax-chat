@@ -15,7 +15,9 @@ if (isset($_SERVER["REQUEST_URI"]))  $sac_request = sanitize_text_field($_SERVER
 if (isset($_SERVER['HTTP_REFERER'])) $sac_referer = sanitize_text_field($_SERVER['HTTP_REFERER']);
 if (isset($_SERVER['REMOTE_ADDR']))  $sac_address = sanitize_text_field($_SERVER['REMOTE_ADDR']);
 
-$sac_chat_url = 'http://' . $sac_host . $sac_request;
+$sac_protocol = 'http://';
+if (is_ssl()) $sac_protocol = 'https://';
+$sac_chat_url = $sac_protocol . $sac_host . $sac_request;
 $sac_match = preg_match("/$sac_host/i", $sac_referer);
 
 // check registered
@@ -29,29 +31,10 @@ if ($_COOKIE['PHPSESSID'] == session_id()) {
 }
 session_unset();
 
-// add data to DB
-if ((isset($sac_match)) && ($sac_match !== null) && ($sac_match !== 0) && ($sac_match !== '')) {
-	if ((isset($sac_referer)) && ($sac_referer !== null) && ($sac_referer !== '')) {
-		if (empty($_POST['sac_verify'])) {
+// check nonce
+if (!isset($sac_nonce) || (isset($sac_nonce) && !wp_verify_nonce($sac_nonce, 'sac_nonce'))) wp_die('Invalid nonce');
 
-			// >
-			if (!current_user_can('read') && $registered_only) {
-				die ('Please do not load this page directly. Thanks!');
-
-			} else {
-				if ($sac_user_name != '' && $sac_user_text != '' && $sacSendChat == "yes") {
-					sac_addData($sac_user_name, $sac_user_text, $sac_user_url);
-					sac_deleteOld();
-					echo "0";
-				}
-			}
-			// >
-
-		}
-	}
-}
-
-// chat submit fails
+// process data
 if ((isset($sac_match)) && ($sac_match !== null) && ($sac_match !== 0) && ($sac_match !== '')) {
 	if ((isset($sac_referer)) && ($sac_referer !== null) && ($sac_referer !== '')) {
 		if (empty($_POST['sac_verify'])) {
@@ -82,6 +65,12 @@ if ((isset($sac_match)) && ($sac_match !== null) && ($sac_match !== 0) && ($sac_
 							_e('Name and comment required.', 'sac');
 						}
 					}
+				} else {
+					if ($sac_user_name != '' && $sac_user_text != '' && $sacSendChat == "yes") {
+						sac_addData($sac_user_name, $sac_user_text, $sac_user_url);
+						sac_deleteOld();
+						echo "0";
+					}
 				}
 			}
 			// >
@@ -90,7 +79,7 @@ if ((isset($sac_match)) && ($sac_match !== null) && ($sac_match !== 0) && ($sac_
 	}
 }
 
-// process chat data
+// insert data
 function sac_addData($sac_user_name, $sac_user_text, $sac_user_url) {
 	global $wpdb, $table_prefix, $sac_options;
 	
@@ -106,23 +95,27 @@ function sac_addData($sac_user_name, $sac_user_text, $sac_user_url) {
 	
 	if ($use_username && !empty($logged_name)) $sac_user_name = $logged_name;
 	
-	$sac_user_url  = ($sac_user_url == 'http://') ? '' : esc_url($sac_user_url);
-	
+	if (empty($sac_user_url) || $sac_user_url == 'http://' || $sac_user_url == 'https://') {
+		$sac_user_url = '';
+	} else {
+		$sac_user_url = esc_url($sac_user_url);
+	}
 	$query = $wpdb->get_row("SELECT * FROM $wpdb->options WHERE option_name = 'sac_censors'", ARRAY_A);
 	$list  = $query['option_value'];
 
 	$censors = explode(",", strval($list));
 	$censors = array_map('trim', $censors);
+	$censored = apply_filters('sac_censor_replace', '');
 	if (!empty($censors)) {
 		foreach ($censors as $censor) {
 			if (stristr($sac_user_text, $censor)) {
-				$sac_user_text = str_ireplace($censor, '', $sac_user_text);
+				$sac_user_text = str_ireplace($censor, $censored, $sac_user_text);
 			}
 			if (stristr($sac_user_name, $censor)) {
-				$sac_user_name = str_ireplace($censor, '', $sac_user_name);
+				$sac_user_name = str_ireplace($censor, $censored, $sac_user_name);
 			}
 			if (stristr($sac_user_url, $censor)) {
-				$sac_user_url = str_ireplace($censor, '', $sac_user_url);
+				$sac_user_url = str_ireplace($censor, $censored, $sac_user_url);
 			}
 		}
 	}
