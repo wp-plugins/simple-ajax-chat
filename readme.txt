@@ -20,7 +20,7 @@ Simple Ajax Chat displays a fully customizable Ajax-powered chat box anywhere on
 
 == Description ==
 
-__IMPORTANT:__ if you are upgrading from a previous version of Simple Ajax Chat, please read the [upgrade instructions](https://wordpress.org/plugins/simple-ajax-chat/installation/)
+__IMPORTANT:__ if you are upgrading from version less than 20150316, please read the [upgrade instructions](https://wordpress.org/plugins/simple-ajax-chat/installation/)
 
 Simple Ajax Chat makes it easy for your visitors to chat with each other on your website. There already are a number of decent chat plugins, but I wanted one that is simple yet fully customizable with all the features AND outputs clean HTML markup.
 
@@ -77,9 +77,9 @@ Once everything is customized as you like it, display the form anywhere using th
 
 = Upgrading =
 
-__IMPORTANT:__ the time functionality has been upgraded in the latest version of the plugin. As a result, all chat messages will be deleted when the plugin is upgraded to the latest version. If you want to save your current chats, please make a backup BEFORE upgrading.
+__IMPORTANT:__ the time functionality has been upgraded in version 20150316. As a result, all chat messages will be deleted when the plugin is upgraded to the latest version. If you want to save your current chats, please make a backup BEFORE upgrading. This applies only to people who are upgrading from a version less than 20150316.
 
-__ALSO:__ After upgrading, if your chat box displays something like "you need at least one message.." do the following:
+__ALSO:__ After upgrading from a version less than 20150316, if your chat box displays something like "you need at least one message..", do the following:
 
 1. Backup or make a note of your chat settings (so you can restore them)
 2. Click the "Restore default settings" button
@@ -122,7 +122,7 @@ If your site's `wp-blog-header.php` and `wp-config.php` are not located in the u
 
 == Upgrade Notice ==
 
-__IMPORTANT:__ the time functionality has been upgraded in the latest version of the plugin. As a result, all chat messages will be deleted when the plugin is upgraded to the latest version. If you want to save your current chats, please make a backup BEFORE upgrading.
+__IMPORTANT:__ the time functionality has been upgraded in version of the plugin. As a result, all chat messages will be deleted when the plugin is upgraded to the latest version. If you want to save your current chats, please make a backup BEFORE upgrading.
 
 __ALSO:__ After upgrading, if your chat box displays something like "you need at least one message.." do the following:
 
