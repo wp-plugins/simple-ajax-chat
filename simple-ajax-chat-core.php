@@ -8,10 +8,10 @@
 	Author URI: http://monzilla.biz/
 	Donate link: http://m0n.co/donate
 	Contributors: specialk
-	Requires at least: 3.9
-	Tested up to: 4.2
+	Requires at least: 4.0
+	Tested up to: 4.3
 	Stable tag: trunk
-	Version: 20150507
+	Version: 20150808
 	Text Domain: sac
 	Domain Path: /languages/
 	License: GPL v2 or later
@@ -19,8 +19,8 @@
 
 if (!function_exists('add_action')) die();
 
-$sac_wp_vers = '3.9';
-$sac_version = '20150507';
+$sac_wp_vers = '4.0';
+$sac_version = '20150808';
 $sac_plugin  = 'Simple Ajax Chat';
 $sac_path    = 'simple-ajax-chat/simple-ajax-chat-admin.php';
 $sac_homeurl = 'https://perishablepress.com/simple-ajax-chat/';

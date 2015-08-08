@@ -256,11 +256,17 @@ function initJavaScript() {
 	<?php endif; ?>
 };
 
+
+
+
+
+
 // receive chat text
 function receiveChatText() {
 	sac_lastID = parseInt(document.getElementById("sac_lastID").value) - 1;
+	
 	if (httpReceiveChat.readyState == 4 || httpReceiveChat.readyState == 0) {
-		httpReceiveChat.open("GET", GetChaturl + "&sac_lastID=" + sac_lastID + "&rand=" + Math.floor(Math.random() * 1000000), true);
+		httpReceiveChat.open("GET", GetChaturl + "&sac_lastID=" + sac_lastID + "&nonce=<?php echo wp_create_nonce('get_sac_nonce'); ?>" + "&rand=" + Math.floor(Math.random() * 1000000), true);
 		httpReceiveChat.onreadystatechange = handlehHttpReceiveChat;
 		httpReceiveChat.send(null);
 		sac_loadtimes++;
@@ -268,8 +274,15 @@ function receiveChatText() {
 			sac_timeout = sac_timeout * 5/4;
 		}
 	}
+	
 	setTimeout("receiveChatText()", sac_timeout)
 };
+
+
+
+
+
+
 
 // http receive chat
 function handlehHttpReceiveChat() {

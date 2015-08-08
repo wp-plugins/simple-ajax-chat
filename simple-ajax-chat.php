@@ -1,7 +1,7 @@
 <?php // Simple Ajax Chat > Ajax
 
 define('WP_USE_THEMES', false);
-require('../../../wp-blog-header.php');
+require('../../../wp-load.php');
 $sac_options = get_option('sac_options');
 if (!function_exists('add_action')) die();
 
@@ -31,53 +31,69 @@ if ($_COOKIE['PHPSESSID'] == session_id()) {
 }
 session_unset();
 
+
+
+
+
+
 // check nonce
-if (!isset($sac_nonce) || (isset($sac_nonce) && !wp_verify_nonce($sac_nonce, 'sac_nonce'))) wp_die('Invalid nonce');
+
+$get_sac_nonce = isset($_GET['nonce']) ? $_GET['nonce'] : '';
 
 // process data
-if ((isset($sac_match)) && ($sac_match !== null) && ($sac_match !== 0) && ($sac_match !== '')) {
-	if ((isset($sac_referer)) && ($sac_referer !== null) && ($sac_referer !== '')) {
-		if (empty($_POST['sac_verify'])) {
 
-			// >
-			if (!current_user_can('read') && $registered_only) {
-				die ('Please do not load this page directly. Thanks!');
-
-			} else {
-				if (isset($_POST['sac_no_js'])) {
-					if (isset($_POST['sac_name']) && isset($_POST['sac_chat'])) {
-						if ($_POST['sac_name'] != '' && $_POST['sac_chat'] != '') {
-							if (isset($_POST['sac_url'])) {
-								$sac_url = sanitize_text_field($_POST['sac_url']);
+if ((isset($sac_nonce) && wp_verify_nonce($sac_nonce, 'sac_nonce')) || 
+	(isset($get_sac_nonce) && wp_verify_nonce($get_sac_nonce, 'get_sac_nonce'))) {
+	
+	if ((isset($sac_match)) && ($sac_match !== null) && ($sac_match !== 0) && ($sac_match !== '')) {
+		if ((isset($sac_referer)) && ($sac_referer !== null) && ($sac_referer !== '')) {
+			if (empty($_POST['sac_verify'])) {
+	
+				// >
+				if (!current_user_can('read') && $registered_only) {
+					die ('Please do not load this page directly. Thanks!');
+	
+				} else {
+					if (isset($_POST['sac_no_js'])) {
+						if (isset($_POST['sac_name']) && isset($_POST['sac_chat'])) {
+							if ($_POST['sac_name'] != '' && $_POST['sac_chat'] != '') {
+								if (isset($_POST['sac_url'])) {
+									$sac_url = sanitize_text_field($_POST['sac_url']);
+								} else {
+									$sac_url = '';
+								}
+								$sac_name = sanitize_text_field($_POST['sac_name']);
+								$sac_chat = sanitize_text_field($_POST['sac_chat']);
+								$referrer = sanitize_text_field($_SERVER['HTTP_REFERER']);
+								sac_addData($sac_name, $sac_chat, $sac_url);
+								sac_deleteOld();
+	
+								setcookie("sacUserName", $sac_name, current_time('timestamp') + 60 * 60 * 24 * 30 * 3, '/');
+								setcookie("sacUrl", $sac_url, current_time('timestamp') + 60 * 60 * 24 * 30 * 3, '/');
+								header('location: ' . $referrer);
 							} else {
-								$sac_url = '';
+								_e('Name and comment required.', 'sac');
 							}
-							$sac_name = sanitize_text_field($_POST['sac_name']);
-							$sac_chat = sanitize_text_field($_POST['sac_chat']);
-							$referrer = sanitize_text_field($_SERVER['HTTP_REFERER']);
-							sac_addData($sac_name, $sac_chat, $sac_url);
+						}
+					} else {
+						if ($sac_user_name != '' && $sac_user_text != '' && $sacSendChat == "yes") {
+							sac_addData($sac_user_name, $sac_user_text, $sac_user_url);
 							sac_deleteOld();
-
-							setcookie("sacUserName", $sac_name, current_time('timestamp') + 60 * 60 * 24 * 30 * 3, '/');
-							setcookie("sacUrl", $sac_url, current_time('timestamp') + 60 * 60 * 24 * 30 * 3, '/');
-							header('location: ' . $referrer);
-						} else {
-							_e('Name and comment required.', 'sac');
+							echo "0";
 						}
 					}
-				} else {
-					if ($sac_user_name != '' && $sac_user_text != '' && $sacSendChat == "yes") {
-						sac_addData($sac_user_name, $sac_user_text, $sac_user_url);
-						sac_deleteOld();
-						echo "0";
-					}
 				}
+				// >
+	
 			}
-			// >
-
 		}
 	}
+
 }
+
+
+
+
 
 // insert data
 function sac_addData($sac_user_name, $sac_user_text, $sac_user_url) {
